@@ -1,0 +1,28 @@
+<!--components/starfield/index.wxml-->
+<view class="starfield">
+  <!-- 底层渐变 -->
+  <view class="sky-bg"></view>
+
+  <!-- 星星 -->
+  <view 
+    wx:for="{{stars}}" 
+    wx:key="id"
+    class="star star-{{item.size}}"
+    style="left:{{item.x}}%;top:{{item.y}}%;opacity:{{item.opacity}};animation-duration:{{item.duration}}s;animation-delay:{{item.delay}}s;"
+  ></view>
+
+  <!-- 月亮（首页专属） -->
+  <view class="moon" wx:if="{{showMoon}}">
+    <view class="moon-body"></view>
+    <view class="moon-shadow"></view>
+    <view class="moon-glow"></view>
+  </view>
+
+  <!-- 流星 -->
+  <view class="shooting-star" wx:if="{{shootingStar}}" 
+    style="left:{{shootingStar.startX}}%;top:{{shootingStar.startY}}%;"
+  >
+    <view class="meteor-head"></view>
+    <view class="meteor-tail"></view>
+  </view>
+</view>

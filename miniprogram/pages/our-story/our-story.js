@@ -1,0 +1,312 @@
+// pages/our-story/our-story.js
+const db = wx.cloud.database()
+
+Page({
+  data: {
+    todos: [],
+    completed: [],
+    loading: true,
+    showAddModal: false,
+    showCompleteModal: false,
+    showEditModal: false,
+    // 新增表单
+    newTitle: '',
+    newDesc: '',
+    // 完成表单
+    currentTodo: null,
+    feeling: '',
+    images: [],
+    // 编辑表单
+    editingItem: null,
+    editTitle: '',
+    editDesc: '',
+    editFeeling: '',
+    editImages: []
+  },
+
+  onLoad() {
+    this.loadData()
+  },
+
+  onShow() {
+    this.loadData()
+    if (typeof this.getTabBar === 'function' && this.getTabBar()) {
+      this.getTabBar().setData({ selected: 2 })
+    }
+  },
+
+  async loadData() {
+    try {
+      const [todoRes, doneRes] = await Promise.all([
+        db.collection('stories').where({ status: 'todo' }).orderBy('createdAt', 'desc').get(),
+        db.collection('stories').where({ status: 'completed' }).orderBy('completedAt', 'desc').get()
+      ])
+
+      this.setData({
+        todos: todoRes.data,
+        completed: doneRes.data.map(s => ({
+          ...s,
+          dateStr: this.formatDate(s.completedAt),
+          imageCount: s.images ? s.images.length : 0
+        })),
+        loading: false
+      })
+    } catch (err) {
+      console.error('加载数据失败', err)
+      this.setData({ loading: false })
+    }
+  },
+
+  formatDate(timestamp) {
+    if (!timestamp) return ''
+    const d = new Date(timestamp)
+    return `${d.getMonth() + 1}月${d.getDate()}日`
+  },
+
+  // === 新增心愿 ===
+  onAddTap() {
+    this.setData({ showAddModal: true, newTitle: '', newDesc: '' })
+  },
+
+  onAddClose() {
+    this.setData({ showAddModal: false })
+  },
+
+  onTitleInput(e) {
+    this.setData({ newTitle: e.detail.value })
+  },
+
+  onDescInput(e) {
+    this.setData({ newDesc: e.detail.value })
+  },
+
+  async onAddSubmit() {
+    if (!this.data.newTitle.trim()) {
+      wx.showToast({ title: '请输入标题', icon: 'none' })
+      return
+    }
+
+    try {
+      await db.collection('stories').add({
+        data: {
+          title: this.data.newTitle.trim(),
+          description: this.data.newDesc.trim(),
+          status: 'todo',
+          feeling: '',
+          images: [],
+          createdAt: db.serverDate(),
+          completedAt: null
+        }
+      })
+
+      wx.showToast({ title: '心愿已添加 🌱', icon: 'none' })
+      this.setData({ showAddModal: false })
+      this.loadData()
+    } catch (err) {
+      console.error('添加失败', err)
+      wx.showToast({ title: '添加失败', icon: 'none' })
+    }
+  },
+
+  // === 标记完成 ===
+  onCompleteTap(e) {
+    const item = e.currentTarget.dataset.item
+    this.setData({
+      showCompleteModal: true,
+      currentTodo: item,
+      feeling: '',
+      images: []
+    })
+  },
+
+  onCompleteClose() {
+    this.setData({ showCompleteModal: false, currentTodo: null })
+  },
+
+  onFeelingInput(e) {
+    this.setData({ feeling: e.detail.value })
+  },
+
+  onChooseImage() {
+    const remaining = 9 - this.data.images.length
+    if (remaining <= 0) {
+      wx.showToast({ title: '最多9张图片', icon: 'none' })
+      return
+    }
+
+    wx.chooseMedia({
+      count: remaining,
+      mediaType: ['image'],
+      sizeType: ['compressed'],
+      success: (res) => {
+        const newImages = res.tempFiles.map(f => f.tempFilePath)
+        this.setData({ images: [...this.data.images, ...newImages] })
+      }
+    })
+  },
+
+  onRemoveImage(e) {
+    const idx = e.currentTarget.dataset.index
+    const images = this.data.images.filter((_, i) => i !== idx)
+    this.setData({ images })
+  },
+
+  async onCompleteSubmit() {
+    if (!this.data.feeling.trim()) {
+      wx.showToast({ title: '请写下这一刻的感受', icon: 'none' })
+      return
+    }
+
+    const item = this.data.currentTodo
+    wx.showLoading({ title: '提交中...' })
+
+    try {
+      // 上传图片到云存储
+      const uploadPromises = this.data.images.map((img, i) => {
+        const ext = img.split('.').pop() || 'jpg'
+        const cloudPath = `stories/${item._id}_${i}_${Date.now()}.${ext}`
+        return wx.cloud.uploadFile({
+          cloudPath,
+          filePath: img
+        })
+      })
+
+      const uploadResults = await Promise.all(uploadPromises)
+      const imageIds = uploadResults.map(r => r.fileID)
+
+      await db.collection('stories').doc(item._id).update({
+        data: {
+          status: 'completed',
+          feeling: this.data.feeling.trim(),
+          images: imageIds,
+          completedAt: db.serverDate()
+        }
+      })
+
+      wx.hideLoading()
+      wx.showToast({ title: '这一刻已记录 🌸', icon: 'none' })
+      this.setData({ showCompleteModal: false, currentTodo: null })
+      this.loadData()
+    } catch (err) {
+      wx.hideLoading()
+      console.error('完成记录失败', err)
+      wx.showToast({ title: '操作失败', icon: 'none' })
+    }
+  },
+
+  // === 编辑 ===
+  onEditTap(e) {
+    const item = e.currentTarget.dataset.item
+    this.setData({
+      showEditModal: true,
+      editingItem: item,
+      editTitle: item.title,
+      editDesc: item.description || '',
+      editFeeling: item.feeling || '',
+      editImages: item.images || []
+    })
+  },
+
+  onEditClose() {
+    this.setData({ showEditModal: false, editingItem: null })
+  },
+
+  onEditTitleInput(e) { this.setData({ editTitle: e.detail.value }) },
+  onEditDescInput(e) { this.setData({ editDesc: e.detail.value }) },
+  onEditFeelingInput(e) { this.setData({ editFeeling: e.detail.value }) },
+
+  async onEditSubmit() {
+    if (!this.data.editTitle.trim()) {
+      wx.showToast({ title: '标题不能为空', icon: 'none' })
+      return
+    }
+
+    const item = this.data.editingItem
+    const updateData = {
+      title: this.data.editTitle.trim(),
+      description: this.data.editDesc.trim()
+    }
+
+    if (item.status === 'completed') {
+      updateData.feeling = this.data.editFeeling.trim()
+    }
+
+    try {
+      await db.collection('stories').doc(item._id).update({ data: updateData })
+      wx.showToast({ title: '已更新', icon: 'none' })
+      this.setData({ showEditModal: false, editingItem: null })
+      this.loadData()
+    } catch (err) {
+      wx.showToast({ title: '更新失败', icon: 'none' })
+    }
+  },
+
+  // === 删除待完成 ===
+  onDeleteTap(e) {
+    const item = e.currentTarget.dataset.item
+    wx.showModal({
+      title: '',
+      content: '真的要放弃这个心愿吗？',
+      confirmText: '删除',
+      confirmColor: '#FF6B6B',
+      success: async (res) => {
+        if (res.confirm) {
+          try {
+            await db.collection('stories').doc(item._id).remove()
+            wx.showToast({ title: '已删除', icon: 'none' })
+            this.loadData()
+          } catch (err) {
+            wx.showToast({ title: '删除失败', icon: 'none' })
+          }
+        }
+      }
+    })
+  },
+
+  // === 撤回完成 ===
+  onRevertTap(e) {
+    const item = e.currentTarget.dataset.item
+    wx.showModal({
+      title: '',
+      content: '要重新放回心愿单吗？感受和图片将被清空。',
+      confirmText: '撤回',
+      confirmColor: '#FFD700',
+      success: async (res) => {
+        if (res.confirm) {
+          try {
+            // 删除云存储中的图片
+            if (item.images && item.images.length > 0) {
+              const deletePromises = item.images.map(fileId => {
+                return wx.cloud.deleteFile({ fileList: [fileId] }).catch(() => {})
+              })
+              await Promise.all(deletePromises)
+            }
+
+            await db.collection('stories').doc(item._id).update({
+              data: {
+                status: 'todo',
+                feeling: '',
+                images: [],
+                completedAt: null
+              }
+            })
+            wx.showToast({ title: '已撤回心愿单', icon: 'none' })
+            this.loadData()
+          } catch (err) {
+            wx.showToast({ title: '操作失败', icon: 'none' })
+          }
+        }
+      }
+    })
+  },
+
+  // 预览图片
+  onPreviewImage(e) {
+    const url = e.currentTarget.dataset.url
+    const item = this.data.editingItem || this.data.currentTodo
+    wx.previewImage({
+      current: url,
+      urls: item.images || []
+    })
+  }
+})

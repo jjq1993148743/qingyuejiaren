@@ -1,0 +1,105 @@
+/* pages/story-wall/story-wall.wxss */
+
+.page-scroll {
+  height: 100vh;
+}
+
+.page-header {
+  padding: 30rpx 0 20rpx;
+}
+
+.page-title {
+  font-size: 38rpx;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+/* 时间线 */
+.timeline {
+  padding-left: 20rpx;
+}
+
+.timeline-item {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 10rpx;
+  position: relative;
+}
+
+.timeline-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100rpx;
+  flex-shrink: 0;
+  padding-top: 30rpx;
+}
+
+.node-dot {
+  width: 20rpx;
+  height: 20rpx;
+  border-radius: 50%;
+  background: var(--accent-color);
+  box-shadow: 0 0 12rpx rgba(232, 180, 216, 0.5);
+  margin-bottom: 10rpx;
+  position: relative;
+  z-index: 1;
+}
+
+/* 竖线 */
+.timeline-item:not(:last-child) .node-dot::after {
+  content: '';
+  position: absolute;
+  top: 20rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4rpx;
+  height: 300rpx;
+  background: linear-gradient(180deg, var(--border-glow), transparent);
+}
+
+.node-date {
+  font-size: 22rpx;
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+
+.timeline-content {
+  flex: 1;
+  padding-left: 10rpx;
+}
+
+.story-card {
+  padding: 24rpx;
+}
+
+.story-title {
+  font-size: 30rpx;
+  font-weight: 500;
+  color: var(--text-color);
+  margin-bottom: 16rpx;
+}
+
+.story-image {
+  width: 100%;
+  height: 300rpx;
+  border-radius: 16rpx;
+  overflow: hidden;
+  margin-bottom: 16rpx;
+}
+
+.cover-img {
+  width: 100%;
+  height: 100%;
+}
+
+.story-preview {
+  padding: 0;
+}
+
+.preview-text {
+  font-size: 26rpx;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  font-style: italic;
+}

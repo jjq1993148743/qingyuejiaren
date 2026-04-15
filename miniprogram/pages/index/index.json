@@ -1,0 +1,7 @@
+{
+  "usingComponents": {
+    "starfield": "/components/starfield/index",
+    "music-player": "/components/music-player/index"
+  },
+  "navigationStyle": "custom"
+}

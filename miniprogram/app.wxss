@@ -1,0 +1,233 @@
+/**app.wxss - 清悦佳人全局样式 - 紫色星空主题**/
+
+page {
+  --primary-color: #9B6DFF;
+  --primary-light: #C9A5FF;
+  --accent-color: #E8B4D8;
+  --accent-warm: #FFB6C1;
+  --gold-color: #FFD700;
+  --text-color: #E8E0F0;
+  --text-secondary: #B8A8D0;
+  --text-dim: #7B6B99;
+  --bg-dark: #1a0033;
+  --bg-purple: #2d1b4e;
+  --bg-card: rgba(45, 27, 78, 0.6);
+  --bg-card-light: rgba(155, 109, 255, 0.1);
+  --border-glow: rgba(155, 109, 255, 0.3);
+  --pink-soft: rgba(255, 182, 193, 0.3);
+  --white: #FFFFFF;
+  --danger: #FF6B6B;
+
+  background: linear-gradient(180deg, var(--bg-dark) 0%, var(--bg-purple) 100%);
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica,
+    'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei UI', 'Microsoft YaHei',
+    Arial, sans-serif;
+  font-size: 28rpx;
+  color: var(--text-color);
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+/* 自定义导航栏占位 */
+.nav-placeholder {
+  height: 44px;
+  width: 100%;
+}
+
+/* 通用容器 */
+.container {
+  padding: 0 30rpx;
+  box-sizing: border-box;
+  padding-bottom: 220rpx; /* 为底部自定义tabBar和音乐播放器留空间 */
+}
+
+/* 毛玻璃卡片 */
+.glass-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1rpx solid var(--border-glow);
+  border-radius: 24rpx;
+  padding: 30rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.2);
+}
+
+.glass-card-glow {
+  background: var(--bg-card);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1rpx solid var(--primary-light);
+  border-radius: 24rpx;
+  padding: 30rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 0 20rpx rgba(155, 109, 255, 0.15);
+}
+
+/* 按钮 */
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 80rpx;
+  border-radius: 40rpx;
+  font-size: 28rpx;
+  padding: 0 40rpx;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+  color: var(--white);
+  box-shadow: 0 8rpx 24rpx rgba(155, 109, 255, 0.3);
+}
+
+.btn-primary:active {
+  opacity: 0.85;
+  transform: scale(0.97);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--primary-light);
+  border: 1rpx solid var(--primary-light);
+}
+
+/* 文本样式 */
+.section-title {
+  font-size: 34rpx;
+  font-weight: 600;
+  color: var(--text-color);
+  margin-bottom: 20rpx;
+}
+
+.text-secondary {
+  color: var(--text-secondary);
+}
+
+.text-dim {
+  color: var(--text-dim);
+}
+
+.text-accent {
+  color: var(--accent-color);
+}
+
+.text-gold {
+  color: var(--gold-color);
+}
+
+.text-center {
+  text-align: center;
+}
+
+/* 分隔线 */
+.divider {
+  width: 100%;
+  height: 1rpx;
+  background: linear-gradient(90deg, transparent, var(--border-glow), transparent);
+  margin: 30rpx 0;
+}
+
+.divider-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 30rpx 0;
+}
+
+.divider-label::before,
+.divider-label::after {
+  content: '';
+  flex: 1;
+  height: 1rpx;
+  background: linear-gradient(90deg, transparent, var(--border-glow), transparent);
+}
+
+.divider-label text {
+  padding: 0 20rpx;
+  color: var(--text-dim);
+  font-size: 24rpx;
+}
+
+/* Flex 辅助 */
+.flex-row { display: flex; flex-direction: row; }
+.flex-column { display: flex; flex-direction: column; }
+.flex-center { display: flex; align-items: center; justify-content: center; }
+.flex-between { display: flex; align-items: center; justify-content: space-between; }
+.flex-wrap { flex-wrap: wrap; }
+.flex-1 { flex: 1; }
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80rpx 40rpx;
+}
+
+.empty-state .empty-icon {
+  font-size: 80rpx;
+  margin-bottom: 20rpx;
+}
+
+.empty-state .empty-text {
+  color: var(--text-dim);
+  font-size: 28rpx;
+}
+
+/* 安全区域 */
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* 全局音乐播放器 */
+.music-player {
+  position: fixed;
+  right: 30rpx;
+  bottom: 240rpx;
+  width: 88rpx;
+  height: 88rpx;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(155, 109, 255, 0.2);
+  border: 2rpx solid var(--border-glow);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.music-player .music-icon {
+  font-size: 40rpx;
+}
+
+@keyframes musicRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.music-playing {
+  animation: musicRotate 4s linear infinite;
+}
+
+@keyframes musicPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.music-pulse {
+  animation: musicPulse 2s ease-in-out infinite;
+}
+
+/* 滚动条隐藏 */
+::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+  color: transparent;
+}

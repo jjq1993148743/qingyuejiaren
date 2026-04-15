@@ -1,0 +1,32 @@
+/* components/music-player/index.wxss */
+
+.music-player {
+  position: fixed;
+  right: 30rpx;
+  bottom: 240rpx;
+  z-index: 100;
+  width: 96rpx;
+  height: 96rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(155, 109, 255, 0.25);
+  border: 1rpx solid rgba(155, 109, 255, 0.4);
+  border-radius: 50%;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 0 30rpx rgba(155, 109, 255, 0.3), inset 0 0 20rpx rgba(155, 109, 255, 0.1);
+}
+
+.music-icon {
+  font-size: 44rpx;
+  line-height: 1;
+}
+
+.music-playing {
+  animation: musicSpin 3s linear infinite;
+}
+
+@keyframes musicSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

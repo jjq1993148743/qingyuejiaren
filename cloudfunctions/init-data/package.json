@@ -1,0 +1,7 @@
+{
+  "name": "init-data",
+  "version": "1.0.0",
+  "description": "初始化数据库集合和权限",
+  "main": "index.js",
+  "dependencies": {}
+}

@@ -1,0 +1,44 @@
+<!--pages/story-wall/story-wall.wxml-->
+<starfield></starfield>
+
+<view class="nav-placeholder"></view>
+
+<scroll-view scroll-y class="page-scroll">
+  <view class="container">
+    <!-- 标题 -->
+    <view class="page-header">
+      <text class="page-title">💫 我们的故事墙</text>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{!loading && stories.length === 0}}">
+      <text class="empty-icon">🌸</text>
+      <text class="empty-text">{{emptyText}}</text>
+    </view>
+
+    <!-- 时间线 -->
+    <view class="timeline" wx:if="{{stories.length > 0}}">
+      <view class="timeline-item" wx:for="{{stories}}" wx:key="_id">
+        <!-- 时间节点 -->
+        <view class="timeline-node">
+          <view class="node-dot"></view>
+          <text class="node-date">{{item.dateStr}}</text>
+        </view>
+        <!-- 内容卡片 -->
+        <view class="timeline-content" bindtap="onStoryTap" data-id="{{item._id}}">
+          <view class="story-card glass-card-glow">
+            <view class="story-title">{{item.title}}</view>
+            <view class="story-image" wx:if="{{item.coverImage}}">
+              <image src="{{item.coverImage}}" mode="aspectFill" class="cover-img" lazy-load></image>
+            </view>
+            <view class="story-preview" wx:if="{{item.previewText}}">
+              <text class="preview-text">"{{item.previewText}}"</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</scroll-view>
+
+<music-player></music-player>

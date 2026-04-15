@@ -1,0 +1,4 @@
+<!--components/music-player/index.wxml-->
+<view class="music-player" bindtap="onToggle">
+  <text class="music-icon {{isPlaying ? 'music-playing' : ''}}">{{isPlaying ? '🎵' : '🎶'}}</text>
+</view>

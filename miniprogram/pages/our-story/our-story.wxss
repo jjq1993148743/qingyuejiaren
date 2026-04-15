@@ -1,0 +1,251 @@
+/* pages/our-story/our-story.wxss */
+
+.page-scroll {
+  height: 100vh;
+}
+
+.section {
+  margin-bottom: 20rpx;
+}
+
+/* 待完成列表 */
+.todo-item, .done-item {
+  padding: 20rpx 24rpx;
+  margin-bottom: 16rpx;
+}
+
+.todo-main, .done-main {
+  display: flex;
+  align-items: flex-start;
+  gap: 16rpx;
+}
+
+.todo-check, .done-check {
+  flex-shrink: 0;
+  padding-top: 4rpx;
+}
+
+.checkbox {
+  width: 40rpx;
+  height: 40rpx;
+  border: 2rpx solid var(--primary-light);
+  border-radius: 50%;
+  transition: all 0.3s;
+}
+
+.checkbox:active {
+  background: var(--primary-light);
+}
+
+.checkbox-checked {
+  width: 40rpx;
+  height: 40rpx;
+  border: 2rpx solid var(--accent-color);
+  border-radius: 50%;
+  background: rgba(232, 180, 216, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-color);
+  font-size: 24rpx;
+}
+
+.todo-info, .done-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+}
+
+.todo-title, .done-title {
+  font-size: 30rpx;
+  color: var(--text-color);
+  font-weight: 500;
+}
+
+.todo-desc {
+  font-size: 24rpx;
+  color: var(--text-dim);
+}
+
+.done-date {
+  font-size: 22rpx;
+  color: var(--text-dim);
+}
+
+.done-feeling {
+  font-size: 26rpx;
+  color: var(--text-secondary);
+  font-style: italic;
+  line-height: 1.5;
+}
+
+.done-images {
+  margin-top: 4rpx;
+}
+
+.img-count {
+  font-size: 22rpx;
+  color: var(--primary-light);
+}
+
+.todo-delete, .done-revert {
+  flex-shrink: 0;
+  padding: 10rpx;
+}
+
+.delete-icon, .revert-icon {
+  font-size: 28rpx;
+  opacity: 0.6;
+}
+
+/* FAB按钮 */
+.fab-btn {
+  position: fixed;
+  right: 40rpx;
+  bottom: 280rpx;
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+  box-shadow: 0 8rpx 30rpx rgba(155, 109, 255, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.fab-icon {
+  font-size: 52rpx;
+  color: var(--white);
+  font-weight: 300;
+  line-height: 1;
+  margin-top: -4rpx;
+}
+
+/* 弹窗 */
+.modal-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  width: 85%;
+  max-height: 80vh;
+  overflow-y: auto;
+  padding: 40rpx;
+}
+
+.modal-title {
+  font-size: 34rpx;
+  font-weight: 600;
+  color: var(--text-color);
+  text-align: center;
+  margin-bottom: 12rpx;
+}
+
+.modal-subtitle {
+  font-size: 26rpx;
+  color: var(--accent-color);
+  text-align: center;
+  margin-bottom: 24rpx;
+}
+
+.form-group {
+  margin-bottom: 24rpx;
+}
+
+.form-label {
+  font-size: 26rpx;
+  color: var(--text-secondary);
+  margin-bottom: 10rpx;
+  display: block;
+}
+
+.form-input {
+  background: rgba(155, 109, 255, 0.1);
+  border: 1rpx solid var(--border-glow);
+  border-radius: 16rpx;
+  padding: 20rpx;
+  color: var(--text-color);
+  font-size: 28rpx;
+}
+
+.form-textarea {
+  background: rgba(155, 109, 255, 0.1);
+  border: 1rpx solid var(--border-glow);
+  border-radius: 16rpx;
+  padding: 20rpx;
+  color: var(--text-color);
+  font-size: 28rpx;
+  min-height: 160rpx;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.image-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+
+.image-item {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 12rpx;
+  overflow: hidden;
+  position: relative;
+}
+
+.preview-img {
+  width: 100%;
+  height: 100%;
+}
+
+.image-remove {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 36rpx;
+  height: 36rpx;
+  background: rgba(255, 0, 0, 0.6);
+  color: #fff;
+  font-size: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0 12rpx 0 12rpx;
+}
+
+.image-add {
+  width: 160rpx;
+  height: 160rpx;
+  border: 2rpx dashed var(--border-glow);
+  border-radius: 12rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.add-icon {
+  font-size: 52rpx;
+  color: var(--primary-light);
+}
+
+.modal-actions {
+  display: flex;
+  gap: 20rpx;
+  margin-top: 30rpx;
+}
+
+.modal-actions .btn {
+  flex: 1;
+}

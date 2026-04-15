@@ -1,0 +1,152 @@
+<!--pages/our-story/our-story.wxml-->
+<starfield></starfield>
+
+<view class="nav-placeholder"></view>
+
+<scroll-view scroll-y class="page-scroll">
+  <view class="container">
+
+    <!-- 想一起做的事 -->
+    <view class="section">
+      <view class="section-title">💫 想一起做的事</view>
+      <view class="divider"></view>
+
+      <view class="empty-state" wx:if="{{!loading && todos.length === 0}}">
+        <text class="empty-icon">🌱</text>
+        <text class="empty-text">还没有心愿，点击下方添加~</text>
+      </view>
+
+      <view class="todo-list" wx:if="{{todos.length > 0}}">
+        <view class="todo-item glass-card" wx:for="{{todos}}" wx:key="_id">
+          <view class="todo-main">
+            <view class="todo-check" bindtap="onCompleteTap" data-item="{{item}}">
+              <view class="checkbox"></view>
+            </view>
+            <view class="todo-info" bindtap="onEditTap" data-item="{{item}}">
+              <text class="todo-title">{{item.title}}</text>
+              <text class="todo-desc" wx:if="{{item.description}}">{{item.description}}</text>
+            </view>
+            <view class="todo-delete" catchtap="onDeleteTap" data-item="{{item}}">
+              <text class="delete-icon">🗑️</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 分隔 -->
+    <view class="divider-label">
+      <text>✦ ✦ ✦</text>
+    </view>
+
+    <!-- 已完成的事 -->
+    <view class="section">
+      <view class="section-title">✅ 已完成的事</view>
+      <view class="divider"></view>
+
+      <view class="empty-state" wx:if="{{!loading && completed.length === 0}}">
+        <text class="empty-icon">🌸</text>
+        <text class="empty-text">还没有完成的故事~</text>
+      </view>
+
+      <view class="done-list" wx:if="{{completed.length > 0}}">
+        <view class="done-item glass-card" wx:for="{{completed}}" wx:key="_id">
+          <view class="done-main">
+            <view class="done-check">
+              <view class="checkbox-checked">✓</view>
+            </view>
+            <view class="done-info" bindtap="onEditTap" data-item="{{item}}">
+              <text class="done-title">{{item.title}}</text>
+              <text class="done-date">{{item.dateStr}}</text>
+              <text class="done-feeling" wx:if="{{item.feeling}}">"{{item.feeling.length > 40 ? item.feeling.slice(0,40)+'...' : item.feeling}}"</text>
+              <view class="done-images" wx:if="{{item.imageCount > 0}}">
+                <text class="img-count">📷 {{item.imageCount}}</text>
+              </view>
+            </view>
+            <view class="done-revert" catchtap="onRevertTap" data-item="{{item}}">
+              <text class="revert-icon">↩️</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+  </view>
+</scroll-view>
+
+<!-- 添加按钮 -->
+<view class="fab-btn" bindtap="onAddTap">
+  <text class="fab-icon">+</text>
+</view>
+
+<!-- 新增心愿弹窗 -->
+<view class="modal-mask" wx:if="{{showAddModal}}" bindtap="onAddClose">
+  <view class="modal-content glass-card" catchtap="">
+    <view class="modal-title">✨ 添加新心愿</view>
+    <view class="form-group">
+      <text class="form-label">标题 *</text>
+      <input class="form-input" placeholder="想和ta一起做什么呢~" value="{{newTitle}}" bindinput="onTitleInput" />
+    </view>
+    <view class="form-group">
+      <text class="form-label">描述</text>
+      <textarea class="form-textarea" placeholder="更多细节..." value="{{newDesc}}" bindinput="onDescInput" maxlength="200" />
+    </view>
+    <view class="modal-actions">
+      <view class="btn btn-ghost" bindtap="onAddClose">取消</view>
+      <view class="btn btn-primary" bindtap="onAddSubmit">添加</view>
+    </view>
+  </view>
+</view>
+
+<!-- 记录这一刻弹窗 -->
+<view class="modal-mask" wx:if="{{showCompleteModal}}" bindtap="onCompleteClose">
+  <view class="modal-content glass-card" catchtap="">
+    <view class="modal-title">🌸 记录这一刻</view>
+    <view class="modal-subtitle">{{currentTodo.title}}</view>
+    <view class="form-group">
+      <text class="form-label">这一刻的感受 *</text>
+      <textarea class="form-textarea" placeholder="写下你的感受吧..." value="{{feeling}}" bindinput="onFeelingInput" maxlength="500" />
+    </view>
+    <view class="form-group">
+      <text class="form-label">添加照片（最多9张）</text>
+      <view class="image-grid">
+        <view class="image-item" wx:for="{{images}}" wx:key="*this">
+          <image src="{{item}}" mode="aspectFill" class="preview-img" bindtap="onPreviewImage" data-url="{{item}}"></image>
+          <view class="image-remove" catchtap="onRemoveImage" data-index="{{index}}">×</view>
+        </view>
+        <view class="image-add" wx:if="{{images.length < 9}}" bindtap="onChooseImage">
+          <text class="add-icon">+</text>
+        </view>
+      </view>
+    </view>
+    <view class="modal-actions">
+      <view class="btn btn-ghost" bindtap="onCompleteClose">取消</view>
+      <view class="btn btn-primary" bindtap="onCompleteSubmit">完成 ✨</view>
+    </view>
+  </view>
+</view>
+
+<!-- 编辑弹窗 -->
+<view class="modal-mask" wx:if="{{showEditModal}}" bindtap="onEditClose">
+  <view class="modal-content glass-card" catchtap="">
+    <view class="modal-title">✏️ 编辑</view>
+    <view class="form-group">
+      <text class="form-label">标题 *</text>
+      <input class="form-input" value="{{editTitle}}" bindinput="onEditTitleInput" />
+    </view>
+    <view class="form-group">
+      <text class="form-label">描述</text>
+      <textarea class="form-textarea" value="{{editDesc}}" bindinput="onEditDescInput" maxlength="200" />
+    </view>
+    <view class="form-group" wx:if="{{editingItem.status === 'completed'}}">
+      <text class="form-label">感受</text>
+      <textarea class="form-textarea" value="{{editFeeling}}" bindinput="onEditFeelingInput" maxlength="500" />
+    </view>
+    <view class="modal-actions">
+      <view class="btn btn-ghost" bindtap="onEditClose">取消</view>
+      <view class="btn btn-primary" bindtap="onEditSubmit">保存</view>
+    </view>
+  </view>
+</view>
+
+<music-player></music-player>
