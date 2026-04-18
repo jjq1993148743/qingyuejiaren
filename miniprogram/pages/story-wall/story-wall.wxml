@@ -2,7 +2,6 @@
 <!-- 月亮 -->
 <view class="moon-wrap">
   <view class="moon-body"></view>
-  <view class="moon-shadow"></view>
   <view class="moon-glow"></view>
 </view>
 

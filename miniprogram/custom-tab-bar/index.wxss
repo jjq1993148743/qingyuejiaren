@@ -1,5 +1,146 @@
 /* custom-tab-bar/index.wxss - 粉色轻奢主题 */
 
+/* ===== 闪烁星星 ===== */
+.twinkle-star {
+  position: absolute;
+  border-radius: 50%;
+  background: #fff;
+  opacity: 0.3;
+}
+
+/* 18颗星 - 错落节奏：大部分时间微亮，偶尔闪烁一下 */
+.ts-1  { top: 6%;  left: 10%; width: 4rpx; height: 4rpx; opacity: 0.4; animation: twinkle-a 4.2s 0.0s ease-in-out infinite; box-shadow: 0 0 8rpx 2rpx rgba(255,255,255,0.3); }
+.ts-2  { top: 12%; left: 75%; width: 3rpx; height: 3rpx; opacity: 0.5; animation: twinkle-b 5.8s 0.7s ease-in-out infinite; box-shadow: 0 0 6rpx 2rpx rgba(200,180,255,0.3); }
+.ts-3  { top: 18%; left: 38%; width: 5rpx; height: 5rpx; opacity: 0.6; animation: twinkle-c 3.5s 1.2s ease-in-out infinite; box-shadow: 0 0 12rpx 3rpx rgba(200,180,255,0.4); }
+.ts-4  { top: 25%; left: 90%; width: 3rpx; height: 3rpx; opacity: 0.35; animation: twinkle-a 6.1s 0.3s ease-in-out infinite; box-shadow: 0 0 6rpx 2rpx rgba(255,255,255,0.25); }
+.ts-5  { top: 33%; left: 5%;  width: 4rpx; height: 4rpx; opacity: 0.45; animation: twinkle-b 4.7s 1.8s ease-in-out infinite; box-shadow: 0 0 8rpx 2rpx rgba(255,255,255,0.3); }
+.ts-6  { top: 40%; left: 60%; width: 5rpx; height: 5rpx; opacity: 0.55; animation: twinkle-c 5.3s 0.5s ease-in-out infinite; box-shadow: 0 0 12rpx 3rpx rgba(212,165,201,0.4); }
+.ts-7  { top: 48%; left: 28%; width: 3rpx; height: 3rpx; opacity: 0.3; animation: twinkle-a 7.0s 2.4s ease-in-out infinite; box-shadow: 0 0 6rpx 2rpx rgba(255,255,255,0.2); }
+.ts-8  { top: 55%; left: 88%; width: 4rpx; height: 4rpx; opacity: 0.5; animation: twinkle-b 3.9s 0.9s ease-in-out infinite; box-shadow: 0 0 8rpx 2rpx rgba(200,180,255,0.3); }
+.ts-9  { top: 62%; left: 42%; width: 5rpx; height: 5rpx; opacity: 0.6; animation: twinkle-c 4.5s 1.6s ease-in-out infinite; box-shadow: 0 0 12rpx 3rpx rgba(255,255,255,0.4); }
+.ts-10 { top: 70%; left: 15%; width: 3rpx; height: 3rpx; opacity: 0.35; animation: twinkle-a 5.6s 0.6s ease-in-out infinite; box-shadow: 0 0 6rpx 2rpx rgba(212,165,201,0.25); }
+.ts-11 { top: 76%; left: 72%; width: 4rpx; height: 4rpx; opacity: 0.45; animation: twinkle-b 6.4s 2.1s ease-in-out infinite; box-shadow: 0 0 8rpx 2rpx rgba(255,255,255,0.3); }
+.ts-12 { top: 83%; left: 50%; width: 3rpx; height: 3rpx; opacity: 0.3; animation: twinkle-c 4.0s 0.2s ease-in-out infinite; box-shadow: 0 0 6rpx 2rpx rgba(200,180,255,0.2); }
+.ts-13 { top: 3%;  left: 50%; width: 4rpx; height: 4rpx; opacity: 0.4; animation: twinkle-a 5.1s 2.8s ease-in-out infinite; box-shadow: 0 0 8rpx 2rpx rgba(255,255,255,0.3); }
+.ts-14 { top: 35%; left: 95%; width: 3rpx; height: 3rpx; opacity: 0.35; animation: twinkle-b 3.7s 1.0s ease-in-out infinite; box-shadow: 0 0 6rpx 2rpx rgba(212,165,201,0.25); }
+.ts-15 { top: 58%; left: 8%;  width: 4rpx; height: 4rpx; opacity: 0.45; animation: twinkle-c 6.8s 1.5s ease-in-out infinite; box-shadow: 0 0 8rpx 2rpx rgba(255,255,255,0.3); }
+.ts-16 { top: 88%; left: 30%; width: 3rpx; height: 3rpx; opacity: 0.3; animation: twinkle-a 4.4s 0.4s ease-in-out infinite; box-shadow: 0 0 6rpx 2rpx rgba(200,180,255,0.2); }
+.ts-17 { top: 45%; left: 48%; width: 5rpx; height: 5rpx; opacity: 0.55; animation: twinkle-b 3.2s 2.6s ease-in-out infinite; box-shadow: 0 0 12rpx 3rpx rgba(255,255,255,0.4); }
+.ts-18 { top: 92%; left: 82%; width: 3rpx; height: 3rpx; opacity: 0.3; animation: twinkle-c 5.9s 0.8s ease-in-out infinite; box-shadow: 0 0 6rpx 2rpx rgba(212,165,201,0.2); }
+
+/* A类：缓慢微闪 - 大部分时间亮着，偶尔暗一下 */
+@keyframes twinkle-a {
+  0%, 100% { opacity: 0.4; }
+  40%      { opacity: 0.5; }
+  50%      { opacity: 0.15; }
+  55%      { opacity: 0.9; }
+  60%      { opacity: 0.45; }
+}
+
+/* B类：中等闪烁 - 偶尔亮一下 */
+@keyframes twinkle-b {
+  0%, 100% { opacity: 0.3; }
+  30%      { opacity: 0.35; }
+  45%      { opacity: 0.1; }
+  48%      { opacity: 0.85; }
+  52%      { opacity: 0.2; }
+  70%      { opacity: 0.4; }
+  85%      { opacity: 0.15; }
+  88%      { opacity: 0.75; }
+  92%      { opacity: 0.35; }
+}
+
+/* C类：快速闪亮 - 突然亮起再慢慢暗 */
+@keyframes twinkle-c {
+  0%, 100% { opacity: 0.35; }
+  20%      { opacity: 0.4; }
+  35%      { opacity: 0.2; }
+  38%      { opacity: 1; }
+  42%      { opacity: 0.3; }
+  65%      { opacity: 0.5; }
+  75%      { opacity: 0.15; }
+  78%      { opacity: 0.9; }
+  82%      { opacity: 0.4; }
+}
+
+/* ===== 流星效果 ===== */
+.meteor-layer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.meteor {
+  position: absolute;
+  width: 6rpx;
+  height: 6rpx;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 8rpx 3rpx rgba(255,255,255,0.8), 0 0 20rpx 6rpx rgba(200,180,255,0.4);
+  opacity: 0;
+}
+
+.meteor::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 50%;
+  width: 160rpx;
+  height: 2rpx;
+  transform: translateY(-50%);
+  background: linear-gradient(to left, rgba(255,255,255,0.7), rgba(200,180,255,0.3) 40%, transparent);
+  border-radius: 1rpx;
+}
+
+.meteor-1 {
+  top: 2%;
+  left: 10%;
+  animation: meteor1 8s 0s linear infinite;
+}
+
+.meteor-2 {
+  top: 0%;
+  left: 50%;
+  animation: meteor2 10s 3s linear infinite;
+}
+
+.meteor-3 {
+  top: 5%;
+  left: 75%;
+  animation: meteor3 9s 6s linear infinite;
+}
+
+@keyframes meteor1 {
+  0%   { opacity: 0; transform: rotate(-35deg) translate(0, 0); }
+  3%   { opacity: 1; }
+  25%  { opacity: 1; }
+  35%  { opacity: 0; transform: rotate(-35deg) translate(900rpx, 0); }
+  100% { opacity: 0; transform: rotate(-35deg) translate(900rpx, 0); }
+}
+
+@keyframes meteor2 {
+  0%   { opacity: 0; transform: rotate(-35deg) translate(0, 0); }
+  3%   { opacity: 1; }
+  20%  { opacity: 1; }
+  30%  { opacity: 0; transform: rotate(-35deg) translate(1000rpx, 0); }
+  100% { opacity: 0; transform: rotate(-35deg) translate(1000rpx, 0); }
+}
+
+@keyframes meteor3 {
+  0%   { opacity: 0; transform: rotate(-35deg) translate(0, 0); }
+  3%   { opacity: 1; }
+  22%  { opacity: 1; }
+  32%  { opacity: 0; transform: rotate(-35deg) translate(850rpx, 0); }
+  100% { opacity: 0; transform: rotate(-35deg) translate(850rpx, 0); }
+}
+
+/* ===== Tab栏 ===== */
+
 .tab-bar {
   display: flex;
   position: fixed;
