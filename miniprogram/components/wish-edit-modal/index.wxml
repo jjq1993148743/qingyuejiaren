@@ -20,11 +20,11 @@
     </view>
     <view class="form-group" wx:if="{{!isCompleted}}">
       <text class="form-label">描述</text>
-      <textarea class="form-textarea desc-textarea" value="{{desc}}" bindinput="onDescInput" maxlength="200" catchtap="preventBubble" auto-height />
+      <textarea class="form-textarea desc-textarea" value="{{desc}}" bindinput="onDescInput" maxlength="200" catchtap="preventBubble" />
     </view>
     <view class="form-group" wx:if="{{isCompleted}}">
       <text class="form-label">感受</text>
-      <textarea class="form-textarea feeling-textarea" value="{{feeling}}" bindinput="onFeelingInput" maxlength="500" catchtap="preventBubble" auto-height />
+      <textarea class="form-textarea feeling-textarea" value="{{feeling}}" bindinput="onFeelingInput" maxlength="500" catchtap="preventBubble" />
     </view>
     <view class="form-group" wx:if="{{isCompleted && images.length > 0}}">
       <text class="form-label">照片</text>

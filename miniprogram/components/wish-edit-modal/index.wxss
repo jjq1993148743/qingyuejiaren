@@ -65,11 +65,11 @@
 }
 
 .desc-textarea {
-  min-height: 80rpx;
+  height: 160rpx;
 }
 
 .feeling-textarea {
-  min-height: 120rpx;
+  height: 160rpx;
 }
 
 .date-picker {
