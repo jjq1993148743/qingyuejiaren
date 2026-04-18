@@ -117,7 +117,6 @@
       <textarea class="form-textarea feeling-textarea" placeholder="写下你的感受吧..." value="{{feeling}}" bindinput="onFeelingInput" maxlength="500" catchtap="preventBubble" auto-height />
     </view>
     <view class="form-group">
-      <text class="form-label">添加照片</text>
       <view class="image-grid">
         <view class="image-item" wx:for="{{images}}" wx:key="*this">
           <image src="{{item}}" mode="aspectFill" class="preview-img" bindtap="onPreviewImage" data-url="{{item}}"></image>

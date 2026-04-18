@@ -3,5 +3,5 @@
     "wish-edit-modal": "/components/wish-edit-modal/index"
   },
   "navigationStyle": "custom",
-  "navigationBarTitleText": "小日子"
+  "navigationBarTitleText": "日历"
 }

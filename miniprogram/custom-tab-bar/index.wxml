@@ -55,7 +55,7 @@
         <view class="star-tail"></view>
       </view>
     </view>
-    <!-- 小日子：日历 -->
+    <!-- 日历：日历 -->
     <view class="icon-box" wx:if="{{index === 2}}">
       <view class="icon-calendar">
         <view class="cal-ring cal-ring-left"></view>

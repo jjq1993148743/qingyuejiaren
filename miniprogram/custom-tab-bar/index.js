@@ -5,7 +5,7 @@ Component({
     list: [
       { pagePath: '/pages/story-wall/story-wall', text: '故事墙' },
       { pagePath: '/pages/our-story/our-story', text: '愿望清单' },
-      { pagePath: '/pages/little-days/little-days', text: '小日子' }
+      { pagePath: '/pages/little-days/little-days', text: '日历' }
     ]
   },
 
