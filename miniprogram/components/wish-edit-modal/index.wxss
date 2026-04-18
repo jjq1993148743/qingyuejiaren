@@ -122,6 +122,7 @@
 }
 
 /* ===== 编辑模式 ===== */
+.date-picker.disabled {
   opacity: 0.5;
   pointer-events: none;
 }

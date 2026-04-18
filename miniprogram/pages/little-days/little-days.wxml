@@ -62,7 +62,7 @@
         </view>
       </view>
       <view class="detail-empty" wx:else>
-        <text class="empty-hint">这一天暂无记录~</text>
+        <text class="empty-hint">今天啥也没有~</text>
       </view>
 
       <!-- 例假操作 -->

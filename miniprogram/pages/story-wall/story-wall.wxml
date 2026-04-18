@@ -1,17 +1,11 @@
 <!--pages/story-wall/story-wall.wxml-->
-<!-- 月亮 -->
-<view class="moon-wrap">
-  <view class="moon-body"></view>
-  <view class="moon-glow"></view>
-</view>
-
 <view class="nav-placeholder"></view>
 
 <scroll-view scroll-y class="page-scroll">
   <view class="container">
     <!-- 标题 -->
     <view class="page-header">
-      <text class="page-title">💫 我们的故事墙</text>
+      <text class="page-title">💫 我们的故事</text>
     </view>
 
     <!-- 在一起天数 -->

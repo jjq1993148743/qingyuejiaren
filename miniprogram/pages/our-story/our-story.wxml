@@ -4,9 +4,9 @@
 <scroll-view scroll-y class="page-scroll">
   <view class="container">
 
-    <!-- 待实现的愿望 -->
+    <!-- 我们的愿望 -->
     <view class="section">
-      <view class="section-title">💫 待实现的愿望</view>
+      <view class="section-title">💫 我们的愿望</view>
       <view class="divider"></view>
 
       <view class="empty-state" wx:if="{{!loading && todos.length === 0}}">

@@ -2,6 +2,11 @@
 
 <!-- 流星+闪烁星层 - 全局可见 -->
 <view class="meteor-layer">
+  <!-- 月亮 -->
+  <view class="moon-wrap">
+    <view class="moon-body"></view>
+    <view class="moon-glow"></view>
+  </view>
   <!-- 闪烁星星 -->
   <view class="twinkle-star ts-1"></view>
   <view class="twinkle-star ts-2"></view>
