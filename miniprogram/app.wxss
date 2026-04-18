@@ -1,24 +1,24 @@
-/**app.wxss - 清悦佳人全局样式 - 紫色星空主题**/
+/**app.wxss - 清悦佳人全局样式 - 淡紫星空主题**/
 
 page {
-  --primary-color: #9B6DFF;
-  --primary-light: #C9A5FF;
-  --accent-color: #E8B4D8;
-  --accent-warm: #FFB6C1;
-  --gold-color: #FFD700;
+  --primary-color: #9B8EC4;
+  --primary-light: #B5A8D4;
+  --accent-color: #D4A5C9;
+  --accent-warm: #C48EC4;
+  --gold-color: #C9B896;
   --text-color: #E8E0F0;
-  --text-secondary: #B8A8D0;
-  --text-dim: #7B6B99;
-  --bg-dark: #1a0033;
-  --bg-purple: #2d1b4e;
-  --bg-card: rgba(45, 27, 78, 0.6);
-  --bg-card-light: rgba(155, 109, 255, 0.1);
-  --border-glow: rgba(155, 109, 255, 0.3);
-  --pink-soft: rgba(255, 182, 193, 0.3);
-  --white: #FFFFFF;
-  --danger: #FF6B6B;
+  --text-secondary: #C4B8D4;
+  --text-dim: #9A8EB0;
+  --bg-dark: #1A1232;
+  --bg-purple: #221A3A;
+  --bg-card: rgba(40, 30, 65, 0.75);
+  --bg-card-light: rgba(155, 142, 196, 0.1);
+  --border-glow: rgba(155, 142, 196, 0.3);
+  --pink-soft: rgba(212, 165, 201, 0.35);
+  --white: #F0ECF8;
+  --danger: #D4534B;
 
-  background: linear-gradient(180deg, var(--bg-dark) 0%, var(--bg-purple) 100%);
+  background: var(--bg-dark);
   min-height: 100vh;
   font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica,
     'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei UI', 'Microsoft YaHei',
@@ -27,6 +27,194 @@ page {
   color: var(--text-color);
   box-sizing: border-box;
   overflow-x: hidden;
+}
+
+/* 淡紫星空渐变背景 */
+page::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, 
+    #1E1538 0%, 
+    #261D45 20%, 
+    #2E2450 40%, 
+    #362B5C 60%, 
+    #3D3268 80%, 
+    #453974 100%
+  );
+  z-index: -2;
+  pointer-events: none;
+}
+
+/* 星空光斑 + 星尘效果 */
+page::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(1rpx 1rpx at 10% 15%, rgba(255,255,255,0.7) 0%, transparent 100%),
+    radial-gradient(1rpx 1rpx at 25% 8%, rgba(255,255,255,0.5) 0%, transparent 100%),
+    radial-gradient(2rpx 2rpx at 40% 22%, rgba(200,180,255,0.6) 0%, transparent 100%),
+    radial-gradient(1rpx 1rpx at 55% 5%, rgba(255,255,255,0.5) 0%, transparent 100%),
+    radial-gradient(1rpx 1rpx at 70% 18%, rgba(255,255,255,0.6) 0%, transparent 100%),
+    radial-gradient(2rpx 2rpx at 85% 12%, rgba(212,165,201,0.5) 0%, transparent 100%),
+    radial-gradient(1rpx 1rpx at 15% 35%, rgba(255,255,255,0.4) 0%, transparent 100%),
+    radial-gradient(1rpx 1rpx at 30% 42%, rgba(255,255,255,0.5) 0%, transparent 100%),
+    radial-gradient(2rpx 2rpx at 50% 38%, rgba(180,160,230,0.5) 0%, transparent 100%),
+    radial-gradient(1rpx 1rpx at 65% 32%, rgba(255,255,255,0.4) 0%, transparent 100%),
+    radial-gradient(1rpx 1rpx at 80% 45%, rgba(255,255,255,0.5) 0%, transparent 100%),
+    radial-gradient(1rpx 1rpx at 92% 40%, rgba(255,255,255,0.4) 0%, transparent 100%),
+    radial-gradient(2rpx 2rpx at 8% 58%, rgba(200,180,255,0.5) 0%, transparent 100%),
+    radial-gradient(1rpx 1rpx at 22% 65%, rgba(255,255,255,0.4) 0%, transparent 100%),
+    radial-gradient(1rpx 1rpx at 38% 55%, rgba(255,255,255,0.5) 0%, transparent 100%),
+    radial-gradient(1rpx 1rpx at 55% 62%, rgba(255,255,255,0.3) 0%, transparent 100%),
+    radial-gradient(2rpx 2rpx at 72% 58%, rgba(212,165,201,0.4) 0%, transparent 100%),
+    radial-gradient(1rpx 1rpx at 88% 52%, rgba(255,255,255,0.4) 0%, transparent 100%),
+    radial-gradient(1rpx 1rpx at 18% 78%, rgba(255,255,255,0.3) 0%, transparent 100%),
+    radial-gradient(2rpx 2rpx at 35% 82%, rgba(180,160,230,0.4) 0%, transparent 100%),
+    radial-gradient(1rpx 1rpx at 48% 75%, rgba(255,255,255,0.4) 0%, transparent 100%),
+    radial-gradient(1rpx 1rpx at 62% 85%, rgba(255,255,255,0.3) 0%, transparent 100%),
+    radial-gradient(1rpx 1rpx at 78% 72%, rgba(255,255,255,0.5) 0%, transparent 100%),
+    radial-gradient(2rpx 2rpx at 90% 80%, rgba(200,180,255,0.4) 0%, transparent 100%),
+    radial-gradient(1rpx 1rpx at 5% 92%, rgba(255,255,255,0.3) 0%, transparent 100%),
+    radial-gradient(1rpx 1rpx at 42% 95%, rgba(255,255,255,0.4) 0%, transparent 100%),
+    radial-gradient(1rpx 1rpx at 68% 90%, rgba(255,255,255,0.3) 0%, transparent 100%),
+    radial-gradient(2rpx 2rpx at 95% 88%, rgba(212,165,201,0.3) 0%, transparent 100%),
+    radial-gradient(circle at 15% 25%, rgba(155, 142, 196, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 85% 40%, rgba(212, 165, 201, 0.1) 0%, transparent 45%),
+    radial-gradient(circle at 50% 70%, rgba(196, 142, 196, 0.06) 0%, transparent 50%);
+}
+
+/* ==================== 闪烁星星 ==================== */
+.twinkle-star {
+  position: absolute;
+  border-radius: 50%;
+  background: #fff;
+  opacity: 0.15;
+  animation: twinkle 2s ease-in-out infinite;
+}
+
+/* 18颗星 - 更多、更大、更亮、更强光晕 */
+.ts-1  { top: 6%;  left: 10%; width: 5rpx; height: 5rpx; animation-delay: 0s;   animation-duration: 1.8s; box-shadow: 0 0 10rpx 3rpx rgba(255,255,255,0.5); }
+.ts-2  { top: 12%; left: 75%; width: 4rpx; height: 4rpx; animation-delay: 0.4s; animation-duration: 2.2s; box-shadow: 0 0 8rpx 2rpx rgba(200,180,255,0.5); }
+.ts-3  { top: 18%; left: 38%; width: 6rpx; height: 6rpx; animation-delay: 1.0s; animation-duration: 1.6s; box-shadow: 0 0 14rpx 4rpx rgba(200,180,255,0.6); }
+.ts-4  { top: 25%; left: 90%; width: 4rpx; height: 4rpx; animation-delay: 0.2s; animation-duration: 2.5s; box-shadow: 0 0 8rpx 2rpx rgba(255,255,255,0.4); }
+.ts-5  { top: 33%; left: 5%;  width: 5rpx; height: 5rpx; animation-delay: 1.4s; animation-duration: 1.9s; box-shadow: 0 0 10rpx 3rpx rgba(255,255,255,0.5); }
+.ts-6  { top: 40%; left: 60%; width: 6rpx; height: 6rpx; animation-delay: 0.7s; animation-duration: 2.0s; box-shadow: 0 0 14rpx 4rpx rgba(212,165,201,0.5); }
+.ts-7  { top: 48%; left: 28%; width: 4rpx; height: 4rpx; animation-delay: 1.8s; animation-duration: 1.7s; box-shadow: 0 0 8rpx 2rpx rgba(255,255,255,0.4); }
+.ts-8  { top: 55%; left: 88%; width: 5rpx; height: 5rpx; animation-delay: 0.5s; animation-duration: 2.3s; box-shadow: 0 0 10rpx 3rpx rgba(200,180,255,0.5); }
+.ts-9  { top: 62%; left: 42%; width: 6rpx; height: 6rpx; animation-delay: 1.2s; animation-duration: 1.5s; box-shadow: 0 0 14rpx 4rpx rgba(255,255,255,0.6); }
+.ts-10 { top: 70%; left: 15%; width: 4rpx; height: 4rpx; animation-delay: 0.9s; animation-duration: 2.1s; box-shadow: 0 0 8rpx 2rpx rgba(212,165,201,0.4); }
+.ts-11 { top: 76%; left: 72%; width: 5rpx; height: 5rpx; animation-delay: 1.6s; animation-duration: 1.8s; box-shadow: 0 0 10rpx 3rpx rgba(255,255,255,0.5); }
+.ts-12 { top: 83%; left: 50%; width: 4rpx; height: 4rpx; animation-delay: 0.3s; animation-duration: 2.4s; box-shadow: 0 0 8rpx 2rpx rgba(200,180,255,0.4); }
+.ts-13 { top: 3%;  left: 50%; width: 5rpx; height: 5rpx; animation-delay: 2.0s; animation-duration: 1.6s; box-shadow: 0 0 10rpx 3rpx rgba(255,255,255,0.5); }
+.ts-14 { top: 35%; left: 95%; width: 4rpx; height: 4rpx; animation-delay: 0.6s; animation-duration: 2.0s; box-shadow: 0 0 8rpx 2rpx rgba(212,165,201,0.4); }
+.ts-15 { top: 58%; left: 8%;  width: 5rpx; height: 5rpx; animation-delay: 1.3s; animation-duration: 1.7s; box-shadow: 0 0 10rpx 3rpx rgba(255,255,255,0.5); }
+.ts-16 { top: 88%; left: 30%; width: 4rpx; height: 4rpx; animation-delay: 0.8s; animation-duration: 2.2s; box-shadow: 0 0 8rpx 2rpx rgba(200,180,255,0.4); }
+.ts-17 { top: 45%; left: 48%; width: 6rpx; height: 6rpx; animation-delay: 1.9s; animation-duration: 1.4s; box-shadow: 0 0 14rpx 4rpx rgba(255,255,255,0.6); }
+.ts-18 { top: 92%; left: 82%; width: 4rpx; height: 4rpx; animation-delay: 0.1s; animation-duration: 2.6s; box-shadow: 0 0 8rpx 2rpx rgba(212,165,201,0.4); }
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.1; transform: scale(0.6); }
+  50%      { opacity: 1;   transform: scale(1.4); }
+}
+
+/* ==================== 流星效果 ==================== */
+.meteor-layer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.meteor {
+  position: absolute;
+  width: 2rpx;
+  height: 2rpx;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 6rpx 2rpx rgba(255,255,255,0.6);
+  opacity: 0;
+}
+
+/* 流星拖尾 - 用::after做光线尾巴 */
+.meteor::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 120rpx;
+  height: 2rpx;
+  background: linear-gradient(90deg, rgba(255,255,255,0.6), transparent);
+  transform-origin: left center;
+  transform: rotate(0deg);
+}
+
+/* 三颗流星，不同位置和时序 */
+.meteor-1 {
+  top: 5%;
+  left: 15%;
+  transform: rotate(-35deg);
+  animation: meteor1 6s 0s linear infinite;
+}
+.meteor-1::after {
+  transform: rotate(0deg);
+}
+
+.meteor-2 {
+  top: 2%;
+  left: 55%;
+  transform: rotate(-35deg);
+  animation: meteor2 8s 2s linear infinite;
+}
+.meteor-2::after {
+  transform: rotate(0deg);
+}
+
+.meteor-3 {
+  top: 8%;
+  left: 80%;
+  transform: rotate(-35deg);
+  animation: meteor3 7s 4s linear infinite;
+}
+.meteor-3::after {
+  transform: rotate(0deg);
+}
+
+@keyframes meteor1 {
+  0% { opacity: 0; transform: rotate(-35deg) translate(0, 0); }
+  5% { opacity: 1; }
+  30% { opacity: 1; }
+  40% { opacity: 0; transform: rotate(-35deg) translate(500rpx, 350rpx); }
+  100% { opacity: 0; transform: rotate(-35deg) translate(500rpx, 350rpx); }
+}
+
+@keyframes meteor2 {
+  0% { opacity: 0; transform: rotate(-35deg) translate(0, 0); }
+  5% { opacity: 1; }
+  25% { opacity: 1; }
+  35% { opacity: 0; transform: rotate(-35deg) translate(600rpx, 420rpx); }
+  100% { opacity: 0; transform: rotate(-35deg) translate(600rpx, 420rpx); }
+}
+
+@keyframes meteor3 {
+  0% { opacity: 0; transform: rotate(-35deg) translate(0, 0); }
+  5% { opacity: 1; }
+  28% { opacity: 1; }
+  38% { opacity: 0; transform: rotate(-35deg) translate(450rpx, 315rpx); }
+  100% { opacity: 0; transform: rotate(-35deg) translate(450rpx, 315rpx); }
 }
 
 /* 自定义导航栏占位 */
@@ -39,30 +227,26 @@ page {
 .container {
   padding: 0 30rpx;
   box-sizing: border-box;
-  padding-bottom: 220rpx; /* 为底部自定义tabBar和音乐播放器留空间 */
+  padding-bottom: 220rpx;
 }
 
-/* 毛玻璃卡片 */
+/* 毛玻璃卡片 - 星空主题 */
 .glass-card {
-  background: var(--bg-card);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1rpx solid var(--border-glow);
+  background: rgba(40, 30, 65, 0.6);
+  border: 1rpx solid rgba(155, 142, 196, 0.25);
   border-radius: 24rpx;
   padding: 30rpx;
   margin-bottom: 24rpx;
-  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4rpx 24rpx rgba(0, 0, 0, 0.2);
 }
 
 .glass-card-glow {
-  background: var(--bg-card);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: rgba(40, 30, 65, 0.6);
   border: 1rpx solid var(--primary-light);
   border-radius: 24rpx;
   padding: 30rpx;
   margin-bottom: 24rpx;
-  box-shadow: 0 0 20rpx rgba(155, 109, 255, 0.15);
+  box-shadow: 0 4rpx 20rpx rgba(155, 142, 196, 0.15);
 }
 
 /* 按钮 */
@@ -81,7 +265,7 @@ page {
 .btn-primary {
   background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
   color: var(--white);
-  box-shadow: 0 8rpx 24rpx rgba(155, 109, 255, 0.3);
+  box-shadow: 0 8rpx 24rpx rgba(155, 142, 196, 0.3);
 }
 
 .btn-primary:active {
@@ -91,8 +275,8 @@ page {
 
 .btn-ghost {
   background: transparent;
-  color: var(--primary-light);
-  border: 1rpx solid var(--primary-light);
+  color: var(--primary-color);
+  border: 1rpx solid var(--primary-color);
 }
 
 /* 文本样式 */
@@ -182,46 +366,6 @@ page {
 /* 安全区域 */
 .safe-bottom {
   padding-bottom: env(safe-area-inset-bottom);
-}
-
-/* 全局音乐播放器 */
-.music-player {
-  position: fixed;
-  right: 30rpx;
-  bottom: 240rpx;
-  width: 88rpx;
-  height: 88rpx;
-  z-index: 999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  background: rgba(155, 109, 255, 0.2);
-  border: 2rpx solid var(--border-glow);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-}
-
-.music-player .music-icon {
-  font-size: 40rpx;
-}
-
-@keyframes musicRotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-.music-playing {
-  animation: musicRotate 4s linear infinite;
-}
-
-@keyframes musicPulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.1); }
-}
-
-.music-pulse {
-  animation: musicPulse 2s ease-in-out infinite;
 }
 
 /* 滚动条隐藏 */

@@ -1,6 +1,4 @@
 <!--pages/little-days/little-days.wxml-->
-<starfield></starfield>
-
 <view class="nav-placeholder"></view>
 
 <scroll-view scroll-y class="page-scroll">
@@ -15,11 +13,9 @@
 
     <!-- 日历 -->
     <view class="calendar glass-card">
-      <!-- 星期头 -->
       <view class="cal-weekdays">
         <text class="weekday" wx:for="{{weekDays}}" wx:key="*this">{{item}}</text>
       </view>
-      <!-- 日期 -->
       <view class="cal-days">
         <view 
           class="cal-day {{item.empty ? 'day-empty' : ''}} {{item.isToday ? 'day-today' : ''}} {{selectedDate === item.dateStr ? 'day-selected' : ''}} {{item.isMilestone ? 'day-milestone' : ''}}"
@@ -30,11 +26,12 @@
           data-day="{{item.day}}"
         >
           <text class="day-num">{{item.day}}</text>
-          <!-- 故事标记 -->
-          <view class="day-dot story-dot" wx:if="{{item.hasStory}}"></view>
+          <!-- 愿望成真标记 -->
+          <view class="day-dot completed-dot" wx:if="{{item.isCompleted}}"></view>
+          <!-- 未来愿望标记 -->
+          <view class="day-dot todo-dot" wx:if="{{item.isTodo}}"></view>
           <!-- 例假标记 -->
           <view class="day-bg period-bg" wx:if="{{item.isPeriod}}"></view>
-          <view class="day-bg predicted-bg" wx:if="{{item.isPredicted}}"></view>
           <!-- 里程碑标记 -->
           <view class="day-star" wx:if="{{item.isMilestone}}">✨</view>
         </view>
@@ -47,24 +44,31 @@
         <text class="detail-date">{{selectedDateStr}}</text>
       </view>
 
-      <!-- 当天故事 -->
-      <view class="detail-stories" wx:if="{{dayStories.length > 0}}">
-        <view class="detail-story-item" wx:for="{{dayStories}}" wx:key="_id">
-          <text class="story-icon">📖</text>
-          <text class="story-name">{{item.title}}</text>
+      <view class="detail-items" wx:if="{{dayDetails.length > 0}}">
+        <view class="detail-item {{item.type}}" wx:for="{{dayDetails}}" wx:key="index" bindtap="onDetailItemTap" data-item="{{item}}">
+          <view class="detail-item-icon">
+            <text wx:if="{{item.type === 'milestone'}}">✨</text>
+            <text wx:elif="{{item.type === 'period'}}">🩹</text>
+            <text wx:elif="{{item.type === 'completed'}}">✅</text>
+            <text wx:elif="{{item.type === 'todo'}}">⬛</text>
+          </view>
+          <view class="detail-item-content">
+            <text class="detail-item-title">{{item.title}}</text>
+            <text class="detail-item-sub" wx:if="{{item.type === 'completed' && item.feeling}}">"{{item.feeling.length > 30 ? item.feeling.slice(0,30)+'...' : item.feeling}}"</text>
+          </view>
+          <view class="detail-item-arrow" wx:if="{{item.type === 'completed' || item.type === 'todo'}}">
+            <text class="arrow-text">›</text>
+          </view>
         </view>
       </view>
       <view class="detail-empty" wx:else>
-        <text class="empty-hint">这一天还没有故事~</text>
+        <text class="empty-hint">这一天暂无记录~</text>
       </view>
 
       <!-- 例假操作 -->
       <view class="detail-actions">
         <view class="action-btn" bindtap="onMarkPeriod">
           <text>🩹 标记例假</text>
-        </view>
-        <view class="action-btn" bindtap="onPeriodSettings">
-          <text>⚙️ 设置周期</text>
         </view>
         <view class="action-btn" bindtap="onCancelPeriod" wx:if="{{periodDays[selectedDate]}}">
           <text>❌ 取消标记</text>
@@ -75,16 +79,16 @@
     <!-- 图例 -->
     <view class="legend glass-card">
       <view class="legend-item">
+        <view class="legend-dot" style="background:#4CAF50;"></view>
+        <text class="legend-text">愿望成真</text>
+      </view>
+      <view class="legend-item">
+        <view class="legend-dot todo-legend"></view>
+        <text class="legend-text">未来愿望</text>
+      </view>
+      <view class="legend-item">
         <view class="legend-dot" style="background:#FF6B9D;"></view>
         <text class="legend-text">例假</text>
-      </view>
-      <view class="legend-item">
-        <view class="legend-dot predicted-legend"></view>
-        <text class="legend-text">预计</text>
-      </view>
-      <view class="legend-item">
-        <view class="legend-dot" style="background:#E8B4D8;"></view>
-        <text class="legend-text">有故事</text>
       </view>
       <view class="legend-item">
         <text class="legend-star">✨</text>
@@ -97,7 +101,7 @@
 
 <!-- 标记例假弹窗 -->
 <view class="modal-mask" wx:if="{{showPeriodModal}}" bindtap="onPeriodModalClose">
-  <view class="modal-content glass-card" catchtap="">
+  <view class="modal-content glass-card" catchtap="preventBubble">
     <view class="modal-title">🩹 标记例假</view>
     <view class="modal-subtitle">{{markDate}}</view>
     <view class="modal-hint">将从该日期起标记{{periodSettings.duration}}天为例假期</view>
@@ -110,11 +114,11 @@
 
 <!-- 周期设置弹窗 -->
 <view class="modal-mask" wx:if="{{showPeriodSettings}}" bindtap="onSettingsClose">
-  <view class="modal-content glass-card" catchtap="">
+  <view class="modal-content glass-card" catchtap="preventBubble">
     <view class="modal-title">⚙️ 例假周期设置</view>
     <view class="form-group">
       <text class="form-label">周期天数：{{periodSettings.cycle}}天</text>
-      <slider min="0" max="14" value="{{periodSettings.cycle - 21}}" bindchange="onCycleChange" activeColor="#9B6DFF" backgroundColor="#2d1b4e" />
+      <slider min="0" max="14" value="{{periodSettings.cycle - 21}}" bindchange="onCycleChange" activeColor="#9B6DFF" backgroundColor="#3D3268" />
       <view class="slider-labels">
         <text class="slider-text">21天</text>
         <text class="slider-text">35天</text>
@@ -122,7 +126,7 @@
     </view>
     <view class="form-group">
       <text class="form-label">持续天数：{{periodSettings.duration}}天</text>
-      <slider min="0" max="4" value="{{periodSettings.duration - 3}}" bindchange="onDurationChange" activeColor="#9B6DFF" backgroundColor="#2d1b4e" />
+      <slider min="0" max="4" value="{{periodSettings.duration - 3}}" bindchange="onDurationChange" activeColor="#9B8EC4" backgroundColor="#E8E2F0" />
       <view class="slider-labels">
         <text class="slider-text">3天</text>
         <text class="slider-text">7天</text>
@@ -135,4 +139,7 @@
   </view>
 </view>
 
-<music-player></music-player>
+<!-- 编辑愿望弹窗 -->
+<wish-edit-modal visible="{{showEditModal}}" item="{{editingItem}}" bind:close="onEditClose" bind:submit="onEditSubmit" />
+
+

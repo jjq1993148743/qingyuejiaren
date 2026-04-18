@@ -20,8 +20,8 @@ Page({
     editingItem: null,
     editTitle: '',
     editDesc: '',
-    editFeeling: '',
-    editImages: []
+    editDate: '',
+    editFeeling: ''
   },
 
   onLoad() {
@@ -29,16 +29,17 @@ Page({
   },
 
   onShow() {
+    // 每次切回都重新加载，保持数据最新
     this.loadData()
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
-      this.getTabBar().setData({ selected: 2 })
+      this.getTabBar().setData({ selected: 1 })
     }
   },
 
   async loadData() {
     try {
       const [todoRes, doneRes] = await Promise.all([
-        db.collection('stories').where({ status: 'todo' }).orderBy('createdAt', 'desc').get(),
+        db.collection('stories').where({ status: 'todo' }).orderBy('wishDate', 'asc').get(),
         db.collection('stories').where({ status: 'completed' }).orderBy('completedAt', 'desc').get()
       ])
 
@@ -51,6 +52,8 @@ Page({
         })),
         loading: false
       })
+      // 标记故事墙也需要刷新
+      getApp().globalData.storiesDirty = true
     } catch (err) {
       console.error('加载数据失败', err)
       this.setData({ loading: false })
@@ -64,6 +67,9 @@ Page({
   },
 
   // === 新增心愿 ===
+  // 阻止事件冒泡（弹窗内容区域点击不关闭）
+  preventBubble() {},
+
   onAddTap() {
     this.setData({ showAddModal: true, newTitle: '', newDesc: '' })
   },
@@ -85,12 +91,17 @@ Page({
       wx.showToast({ title: '请输入标题', icon: 'none' })
       return
     }
+    if (!this.data.newDate) {
+      wx.showToast({ title: '请选择日期', icon: 'none' })
+      return
+    }
 
     try {
       await db.collection('stories').add({
         data: {
           title: this.data.newTitle.trim(),
           description: this.data.newDesc.trim(),
+          wishDate: this.data.newDate,
           status: 'todo',
           feeling: '',
           images: [],
@@ -99,7 +110,7 @@ Page({
         }
       })
 
-      wx.showToast({ title: '心愿已添加 🌱', icon: 'none' })
+      wx.showToast({ title: '愿望已添加 🌱', icon: 'none' })
       this.setData({ showAddModal: false })
       this.loadData()
     } catch (err) {
@@ -195,15 +206,21 @@ Page({
   },
 
   // === 编辑 ===
-  onEditTap(e) {
+  async onEditTap(e) {
     const item = e.currentTarget.dataset.item
+    // 获取图片临时链接
+    let tempImages = []
+    if (item.images && item.images.length > 0) {
+      try {
+        const res = await wx.cloud.getTempFileURL({ fileList: item.images })
+        tempImages = res.fileList.filter(f => f.status === 0 && f.tempFileURL).map(f => f.tempFileURL)
+      } catch (err) {
+        console.error('获取图片链接失败', err)
+      }
+    }
     this.setData({
       showEditModal: true,
-      editingItem: item,
-      editTitle: item.title,
-      editDesc: item.description || '',
-      editFeeling: item.feeling || '',
-      editImages: item.images || []
+      editingItem: { ...item, tempImages }
     })
   },
 
@@ -211,28 +228,21 @@ Page({
     this.setData({ showEditModal: false, editingItem: null })
   },
 
-  onEditTitleInput(e) { this.setData({ editTitle: e.detail.value }) },
-  onEditDescInput(e) { this.setData({ editDesc: e.detail.value }) },
-  onEditFeelingInput(e) { this.setData({ editFeeling: e.detail.value }) },
-
-  async onEditSubmit() {
-    if (!this.data.editTitle.trim()) {
-      wx.showToast({ title: '标题不能为空', icon: 'none' })
-      return
-    }
-
-    const item = this.data.editingItem
+  async onEditSubmit(e) {
+    const data = e.detail
+    const item = this.properties ? this.data.editingItem : this.data.editingItem
     const updateData = {
-      title: this.data.editTitle.trim(),
-      description: this.data.editDesc.trim()
+      title: data.title,
+      description: data.description,
+      wishDate: data.wishDate
     }
 
-    if (item.status === 'completed') {
-      updateData.feeling = this.data.editFeeling.trim()
+    if (data.feeling !== undefined) {
+      updateData.feeling = data.feeling
     }
 
     try {
-      await db.collection('stories').doc(item._id).update({ data: updateData })
+      await db.collection('stories').doc(data._id).update({ data: updateData })
       wx.showToast({ title: '已更新', icon: 'none' })
       this.setData({ showEditModal: false, editingItem: null })
       this.loadData()
@@ -246,7 +256,7 @@ Page({
     const item = e.currentTarget.dataset.item
     wx.showModal({
       title: '',
-      content: '真的要放弃这个心愿吗？',
+      content: '真的要放弃这个愿望吗？',
       confirmText: '删除',
       confirmColor: '#FF6B6B',
       success: async (res) => {
@@ -268,7 +278,7 @@ Page({
     const item = e.currentTarget.dataset.item
     wx.showModal({
       title: '',
-      content: '要重新放回心愿单吗？感受和图片将被清空。',
+      content: '要重新放回愿望清单吗？感受和图片将被清空。',
       confirmText: '撤回',
       confirmColor: '#FFD700',
       success: async (res) => {
@@ -290,7 +300,7 @@ Page({
                 completedAt: null
               }
             })
-            wx.showToast({ title: '已撤回心愿单', icon: 'none' })
+            wx.showToast({ title: '已撤回愿望清单', icon: 'none' })
             this.loadData()
           } catch (err) {
             wx.showToast({ title: '操作失败', icon: 'none' })
@@ -300,13 +310,14 @@ Page({
     })
   },
 
-  // 预览图片
+  // 预览图片（仅完成弹窗使用，编辑弹窗由组件内部处理）
   onPreviewImage(e) {
     const url = e.currentTarget.dataset.url
-    const item = this.data.editingItem || this.data.currentTodo
+    const urls = this.data.images
+    if (!url || !urls || urls.length === 0) return
     wx.previewImage({
       current: url,
-      urls: item.images || []
+      urls: urls
     })
   }
 })

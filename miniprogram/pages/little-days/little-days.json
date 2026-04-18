@@ -1,7 +1,6 @@
 {
   "usingComponents": {
-    "starfield": "/components/starfield/index",
-    "music-player": "/components/music-player/index"
+    "wish-edit-modal": "/components/wish-edit-modal/index"
   },
   "navigationStyle": "custom",
   "navigationBarTitleText": "小日子"

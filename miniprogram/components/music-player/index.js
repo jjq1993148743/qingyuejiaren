@@ -8,7 +8,6 @@ Component({
 
   lifetimes: {
     attached() {
-      // 保存回调引用，方便detach时移除
       this._onStateChange = this._onStateChange.bind(this)
       const state = app.onMusicStateChange(this._onStateChange)
       this.setData({ isPlaying: state })
@@ -23,7 +22,7 @@ Component({
       this.setData({ isPlaying: playing })
     },
 
-    onToggle() {
+    togglePlay() {
       app.toggleMusic()
     }
   }

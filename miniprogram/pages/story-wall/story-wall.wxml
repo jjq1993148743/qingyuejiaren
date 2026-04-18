@@ -1,5 +1,10 @@
 <!--pages/story-wall/story-wall.wxml-->
-<starfield></starfield>
+<!-- 月亮 -->
+<view class="moon-wrap">
+  <view class="moon-body"></view>
+  <view class="moon-shadow"></view>
+  <view class="moon-glow"></view>
+</view>
 
 <view class="nav-placeholder"></view>
 
@@ -8,6 +13,113 @@
     <!-- 标题 -->
     <view class="page-header">
       <text class="page-title">💫 我们的故事墙</text>
+    </view>
+
+    <!-- 在一起天数 -->
+    <view class="hero-section">
+      <view class="hero-days-row">
+        <text class="hero-label">在一起</text>
+        <text class="days-number">{{days}}</text>
+        <text class="days-unit">天</text>
+      </view>
+      <view class="hero-milestone" wx:if="{{currentMilestone}}">
+        <text class="milestone-badge">{{currentMilestone.icon}} {{currentMilestone.label}}</text>
+      </view>
+    </view>
+
+    <!-- 里程碑进度条 -->
+    <view class="milestone-track glass-card">
+      <view class="track-line">
+        <view class="track-fill" style="width:{{currentMilestone ? ((currentMilestone.days / milestones[milestones.length-1].days) * 100) : 0}}%"></view>
+      </view>
+      <view class="milestone-dots">
+        <view 
+          wx:for="{{milestones}}" 
+          wx:key="days"
+          class="milestone-dot {{item.reached ? 'reached' : ''}}"
+        >
+          <view class="dot {{item.reached ? 'dot-active' : ''}}">
+            <text wx:if="{{item.reached}}">{{item.icon}}</text>
+          </view>
+          <text class="dot-label">{{item.days}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 我们的家 - 聊天记录 -->
+    <view class="chat-section">
+      <view class="chat-date-label">3月10日 · 初见</view>
+      <view class="chat-bubble left">
+        <view class="chat-avatar avatar-she">她</view>
+        <view class="bubble-content">
+          <text>我是🌙 伍月er🌞</text>
+        </view>
+      </view>
+      <view class="chat-bubble right">
+        <view class="bubble-content">
+          <text>你好~</text>
+        </view>
+        <view class="chat-avatar avatar-he">他</view>
+      </view>
+    </view>
+
+    <view class="chat-section">
+      <view class="chat-date-label">3月25日 · 欢喜</view>
+      <view class="chat-bubble right">
+        <view class="bubble-content">
+          <text>我想跟你处对象，我等你答应我</text>
+        </view>
+        <view class="chat-avatar avatar-he">他</view>
+      </view>
+      <view class="chat-bubble left">
+        <view class="chat-avatar avatar-she">她</view>
+        <view class="bubble-content">
+          <text>我看到了</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="chat-section">
+      <view class="chat-date-label">4月12日 · 锁定</view>
+      <view class="chat-bubble left">
+        <view class="chat-avatar avatar-she">她</view>
+        <view class="bubble-content">
+          <text>只要你不出轨，不家暴，我跟定你了，我一定要和你在平淡的日子里开出花。</text>
+        </view>
+      </view>
+      <view class="chat-bubble left">
+        <view class="chat-avatar avatar-she">她</view>
+        <view class="bubble-content">
+          <text>我一定会好好经营我们在一起的生活，这是我给自己的承诺。</text>
+        </view>
+      </view>
+      <view class="chat-bubble left">
+        <view class="chat-avatar avatar-she">她</view>
+        <view class="bubble-content">
+          <text>我会在你看不见我的地方忠诚于你，和你一起经营我们的生活，让你下班有期待，生活有情调，和你一起孝顺父母，这是我给你的承诺。</text>
+        </view>
+      </view>
+      <view class="chat-bubble right">
+        <view class="bubble-content bubble-home">
+          <view class="home-title">我们的家，</view>
+          <view class="home-list">
+            <view wx:for="{{visibleHome}}" wx:key="index" class="home-item" id="home-{{index}}">
+              <text>⬛️ {{item}}</text>
+            </view>
+          </view>
+          <view class="home-final" wx:if="{{visibleHome.length === ourHome.length}}">
+            <text>最后，我们的家，是我们两个人的，至于爱情的结晶？他得排在我媳妇儿后边，谁也不行！</text>
+          </view>
+        </view>
+        <view class="chat-avatar avatar-he">他</view>
+      </view>
+    </view>
+
+    <!-- 分隔 -->
+    <view class="section-divider">
+      <view class="divider-line"></view>
+      <text class="divider-text">✦ 故事时间线 ✦</text>
+      <view class="divider-line"></view>
     </view>
 
     <!-- 空状态 -->
@@ -28,8 +140,11 @@
         <view class="timeline-content" bindtap="onStoryTap" data-id="{{item._id}}">
           <view class="story-card glass-card-glow">
             <view class="story-title">{{item.title}}</view>
-            <view class="story-image" wx:if="{{item.coverImage}}">
-              <image src="{{item.coverImage}}" mode="aspectFill" class="cover-img" lazy-load></image>
+            <!-- 九宫格图片 -->
+            <view class="story-images {{item.tempImages.length === 1 ? 'grid-one' : item.tempImages.length === 2 ? 'grid-two' : item.tempImages.length === 4 ? 'grid-four' : 'grid-nine'}}" wx:if="{{item.tempImages.length > 0}}">
+              <view class="img-cell" wx:for="{{item.tempImages}}" wx:key="*this" wx:for-item="img" wx:for-index="imgIdx">
+                <image src="{{img}}" mode="aspectFill" class="grid-img" lazy-load catchtap="onPreviewImage" data-url="{{img}}" data-urls="{{item.tempImages}}"></image>
+              </view>
             </view>
             <view class="story-preview" wx:if="{{item.previewText}}">
               <text class="preview-text">"{{item.previewText}}"</text>
@@ -41,4 +156,7 @@
   </view>
 </scroll-view>
 
-<music-player></music-player>
+<!-- 编辑弹窗 -->
+<wish-edit-modal visible="{{showEditModal}}" item="{{editingItem}}" bind:close="onEditClose" bind:submit="onEditSubmit" />
+
+

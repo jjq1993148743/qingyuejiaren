@@ -1,4 +1,7 @@
 // components/starfield/index.js
+// 性能优化：星星数据只在首次生成，后续页面复用缓存
+let cachedStars = null
+
 Component({
   properties: {
     showMoon: {
@@ -9,18 +12,24 @@ Component({
 
   data: {
     stars: [],
-    shootingStar: null,
-    shootingTimer: null
+    shootingStar: null
   },
 
   lifetimes: {
     attached() {
-      this.generateStars()
+      // 复用缓存的星星数据，避免每次切换Tab都重新生成
+      if (cachedStars) {
+        this.setData({ stars: cachedStars })
+      } else {
+        this.generateStars()
+      }
       this.startShootingStars()
     },
+
     detached() {
-      if (this.data.shootingTimer) {
-        clearInterval(this.data.shootingTimer)
+      if (this._shootingTimer) {
+        clearInterval(this._shootingTimer)
+        this._shootingTimer = null
       }
     }
   },
@@ -28,7 +37,7 @@ Component({
   methods: {
     generateStars() {
       const stars = []
-      for (let i = 0; i < 120; i++) {
+      for (let i = 0; i < 80; i++) { // 从120减少到80，减少DOM节点
         stars.push({
           id: i,
           x: Math.random() * 100,
@@ -39,20 +48,20 @@ Component({
           delay: (Math.random() * 5).toFixed(1)
         })
       }
+      cachedStars = stars // 缓存
       this.setData({ stars })
     },
 
     startShootingStars() {
-      const timer = setInterval(() => {
+      // 降低流星频率，减少动画开销
+      this._shootingTimer = setInterval(() => {
         this.triggerShootingStar()
-      }, (Math.random() * 15 + 15) * 1000)
+      }, 20000) // 每20秒一颗
 
-      this.setData({ shootingTimer: timer })
-
-      // 首次5秒后触发一颗
+      // 首次8秒后触发
       setTimeout(() => {
         this.triggerShootingStar()
-      }, 5000)
+      }, 8000)
     },
 
     triggerShootingStar() {

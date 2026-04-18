@@ -1,35 +1,30 @@
 {
   "pages": [
-    "pages/index/index",
     "pages/story-wall/story-wall",
     "pages/our-story/our-story",
     "pages/little-days/little-days"
   ],
   "window": {
-    "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#1a0033",
+    "backgroundTextStyle": "dark",
+    "navigationBarBackgroundColor": "#1E1538",
     "navigationBarTitleText": "清悦佳人",
-    "navigationBarTextStyle": "white",
+    "navigationBarTextStyle": "black",
     "navigationStyle": "custom"
   },
   "tabBar": {
     "custom": true,
-    "color": "#8B7DAF",
-    "selectedColor": "#E8B4D8",
-    "backgroundColor": "#1a0033",
-    "borderStyle": "black",
+    "color": "#D4B0C0",
+    "selectedColor": "#FFD0DC",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "white",
     "list": [
-      {
-        "pagePath": "pages/index/index",
-        "text": "我们的家"
-      },
       {
         "pagePath": "pages/story-wall/story-wall",
         "text": "故事墙"
       },
       {
         "pagePath": "pages/our-story/our-story",
-        "text": "我们的故事"
+        "text": "愿望清单"
       },
       {
         "pagePath": "pages/little-days/little-days",

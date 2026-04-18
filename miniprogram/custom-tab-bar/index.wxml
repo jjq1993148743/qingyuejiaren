@@ -1,4 +1,32 @@
 <!--custom-tab-bar/index.wxml-->
+
+<!-- 流星+闪烁星层 - 全局可见 -->
+<view class="meteor-layer">
+  <!-- 闪烁星星 -->
+  <view class="twinkle-star ts-1"></view>
+  <view class="twinkle-star ts-2"></view>
+  <view class="twinkle-star ts-3"></view>
+  <view class="twinkle-star ts-4"></view>
+  <view class="twinkle-star ts-5"></view>
+  <view class="twinkle-star ts-6"></view>
+  <view class="twinkle-star ts-7"></view>
+  <view class="twinkle-star ts-8"></view>
+  <view class="twinkle-star ts-9"></view>
+  <view class="twinkle-star ts-10"></view>
+  <view class="twinkle-star ts-11"></view>
+  <view class="twinkle-star ts-12"></view>
+  <view class="twinkle-star ts-13"></view>
+  <view class="twinkle-star ts-14"></view>
+  <view class="twinkle-star ts-15"></view>
+  <view class="twinkle-star ts-16"></view>
+  <view class="twinkle-star ts-17"></view>
+  <view class="twinkle-star ts-18"></view>
+  <!-- 流星 -->
+  <view class="meteor meteor-1"></view>
+  <view class="meteor meteor-2"></view>
+  <view class="meteor meteor-3"></view>
+</view>
+
 <view class="tab-bar">
   <view 
     class="tab-item {{selected === index ? 'active' : ''}}" 
@@ -7,7 +35,34 @@
     bindtap="switchTab"
     data-index="{{index}}"
   >
-    <text class="tab-icon">{{selected === index ? item.activeIcon : item.icon}}</text>
+    <!-- 故事墙：竖线组 -->
+    <view class="icon-box" wx:if="{{index === 0}}">
+      <view class="icon-bars">
+        <view class="bar"></view>
+        <view class="bar"></view>
+        <view class="bar"></view>
+      </view>
+    </view>
+    <!-- 愿望清单：圆+勾 -->
+    <view class="icon-box" wx:if="{{index === 1}}">
+      <view class="icon-check-circle">
+        <view class="check-mark"></view>
+      </view>
+    </view>
+    <!-- 小日子：日历格 -->
+    <view class="icon-box" wx:if="{{index === 2}}">
+      <view class="icon-calendar">
+        <view class="cal-header"></view>
+        <view class="cal-dots">
+          <view class="cal-dot"></view>
+          <view class="cal-dot"></view>
+          <view class="cal-dot"></view>
+        </view>
+      </view>
+    </view>
     <text class="tab-text">{{item.text}}</text>
   </view>
 </view>
+
+<!-- 全局音乐播放器 - 放在 tabBar 中，切页面不销毁 -->
+<music-player></music-player>

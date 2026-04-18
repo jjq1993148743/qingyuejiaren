@@ -1,4 +1,22 @@
 <!--components/music-player/index.wxml-->
-<view class="music-player" bindtap="onToggle">
-  <text class="music-icon {{isPlaying ? 'music-playing' : ''}}">{{isPlaying ? '🎵' : '🎶'}}</text>
+<view class="music-fab" bindtap="togglePlay">
+  <!-- 唱片盘 -->
+  <view class="disc {{isPlaying ? 'spinning' : ''}}">
+    <view class="disc-inner">
+      <view class="disc-ring"></view>
+      <view class="disc-center">
+        <text class="disc-note">♪</text>
+      </view>
+    </view>
+  </view>
+  <!-- 飘出的音符 -->
+  <view class="notes-container" wx:if="{{isPlaying}}">
+    <view class="float-note n1">♪</view>
+    <view class="float-note n2">♫</view>
+    <view class="float-note n3">♩</view>
+  </view>
+  <!-- 播放状态指示 -->
+  <view class="play-indicator" wx:if="{{!isPlaying}}">
+    <view class="play-triangle"></view>
+  </view>
 </view>

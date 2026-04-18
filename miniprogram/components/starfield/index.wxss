@@ -81,7 +81,7 @@
   100% { transform: scale(1.2); opacity: 1; }
 }
 
-/* 流星 */
+/* 流星 - 从左上到右下 */
 .shooting-star {
   position: absolute;
   width: 200rpx;
@@ -92,8 +92,8 @@
 
 .meteor-head {
   position: absolute;
-  left: 0;
-  top: 0;
+  right: 0;
+  top: -2rpx;
   width: 8rpx;
   height: 8rpx;
   border-radius: 50%;
@@ -103,11 +103,11 @@
 
 .meteor-tail {
   position: absolute;
-  left: 8rpx;
+  right: 8rpx;
   top: 0;
   width: 192rpx;
   height: 4rpx;
-  background: linear-gradient(to right, rgba(255, 255, 255, 0.8), transparent);
+  background: linear-gradient(to left, rgba(255, 255, 255, 0.8), transparent);
   border-radius: 2rpx;
 }
 

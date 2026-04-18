@@ -1,8 +1,7 @@
 {
   "usingComponents": {
-    "starfield": "/components/starfield/index",
-    "music-player": "/components/music-player/index"
+    "wish-edit-modal": "/components/wish-edit-modal/index"
   },
   "navigationStyle": "custom",
-  "navigationBarTitleText": "我们的故事"
+  "navigationBarTitleText": "愿望清单"
 }

@@ -15,7 +15,7 @@ App({
     this.globalData.musicPlaying = false
     this.globalData.musicContext = null
     this.globalData.musicTempUrl = ''
-    this.globalData.musicCloudId = 'cloud://ai-native-0gci58pr08c95d4c.music/videoplayback.m4a'
+    this.globalData.musicCloudId = 'cloud://ai-native-0gci58pr08c95d4c.6169-ai-native-0gci58pr08c95d4c-1419869429/music/videoplayback.m4a'
   },
 
   // 获取音乐临时链接（cloud:// 不能直接给 InnerAudioContext 用，需转换）
@@ -157,7 +157,8 @@ App({
     musicPlaying: false,
     musicContext: null,
     musicTempUrl: '',
-    musicCloudId: 'cloud://ai-native-0gci58pr08c95d4c.music/videoplayback.m4a',
-    musicCallbacks: []
+    musicCloudId: 'cloud://ai-native-0gci58pr08c95d4c.6169-ai-native-0gci58pr08c95d4c-1419869429/music/videoplayback.m4a',
+    musicCallbacks: [],
+    storiesDirty: true
   }
 })
