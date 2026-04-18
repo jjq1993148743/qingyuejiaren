@@ -104,7 +104,7 @@
 <!-- 记录这一刻弹窗 -->
 <view class="modal-mask" wx:if="{{showCompleteModal}}" bindtap="onCompleteClose">
   <view class="modal-content glass-card" catchtap="preventBubble">
-    <view class="modal-title">🌸 记录这一刻</view>
+    <view class="modal-title">🌸 完成愿望</view>
     <view class="modal-subtitle">{{currentTodo.title}}</view>
     <view class="form-group">
       <text class="form-label">完成时间</text>

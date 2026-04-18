@@ -46,7 +46,7 @@
 
       <view class="detail-items" wx:if="{{dayDetails.length > 0}}">
         <view class="detail-item {{item.type}}" wx:for="{{dayDetails}}" wx:key="index" bindtap="onDetailItemTap" data-item="{{item}}">
-          <view class="detail-item-icon">
+          <view class="detail-item-icon" catchtap="{{item.type === 'todo' ? 'onCompleteFromDay' : ''}}" data-item="{{item}}">
             <text wx:if="{{item.type === 'milestone'}}">✨</text>
             <text wx:elif="{{item.type === 'period'}}">🩹</text>
             <!-- 已完成：绿色圆圈勾号 -->
@@ -140,6 +140,40 @@
     <view class="modal-actions">
       <view class="btn btn-ghost" bindtap="onSettingsClose">取消</view>
       <view class="btn btn-primary" bindtap="onSaveSettings">保存</view>
+    </view>
+  </view>
+</view>
+
+<!-- 完成愿望弹窗 -->
+<view class="modal-mask" wx:if="{{showCompleteModal}}" bindtap="onCompleteClose">
+  <view class="modal-content glass-card" catchtap="preventBubble">
+    <view class="modal-title">🌸 完成愿望</view>
+    <view class="modal-subtitle">{{currentTodo.title}}</view>
+    <view class="form-group">
+      <text class="form-label">完成时间</text>
+      <picker mode="date" value="{{completedDate}}" bindchange="onCompletedDateInput">
+        <view class="form-input date-picker">{{completedDate || '请选择日期'}}</view>
+      </picker>
+    </view>
+    <view class="form-group">
+      <text class="form-label">这一刻的感受 *</text>
+      <textarea class="form-textarea feeling-textarea" placeholder="写下你的感受吧..." value="{{feeling}}" bindinput="onFeelingInput" maxlength="500" catchtap="preventBubble" auto-height />
+    </view>
+    <view class="form-group">
+      <text class="form-label">添加照片</text>
+      <view class="image-grid">
+        <view class="image-item" wx:for="{{images}}" wx:key="*this">
+          <image src="{{item}}" mode="aspectFill" class="preview-img" bindtap="onPreviewCompleteImage" data-url="{{item}}"></image>
+          <view class="image-remove" catchtap="onRemoveImage" data-index="{{index}}">×</view>
+        </view>
+        <view class="image-add" wx:if="{{images.length < 9}}" bindtap="onChooseImage">
+          <text class="add-icon">+</text>
+        </view>
+      </view>
+    </view>
+    <view class="modal-actions">
+      <view class="btn btn-ghost" bindtap="onCompleteClose">取消</view>
+      <view class="btn btn-primary" bindtap="onCompleteSubmit">完成 ✨</view>
     </view>
   </view>
 </view>

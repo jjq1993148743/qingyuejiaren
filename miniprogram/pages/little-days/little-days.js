@@ -41,6 +41,12 @@ Page({
     showEditModal: false,
     editingItem: null,
     isAddMode: false,
+    // 完成愿望弹窗
+    showCompleteModal: false,
+    currentTodo: null,
+    completedDate: '',
+    feeling: '',
+    images: [],
   },
 
   onLoad() {
@@ -426,8 +432,108 @@ Page({
   },
 
   // === 编辑弹窗 ===
+  preventBubble() {},
+
   onEditClose() {
     this.setData({ showEditModal: false, editingItem: null, isAddMode: false })
+  },
+
+  // === 完成愿望 ===
+  onCompleteFromDay(e) {
+    const item = e.currentTarget.dataset.item
+    if (item.type !== 'todo') return // 只有未完成才能点对号完成
+
+    const now = new Date()
+    const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
+    this.setData({
+      showCompleteModal: true,
+      currentTodo: item,
+      completedDate: today,
+      feeling: '',
+      images: []
+    })
+  },
+
+  onCompleteClose() {
+    this.setData({ showCompleteModal: false, currentTodo: null })
+  },
+
+  onFeelingInput(e) {
+    this.setData({ feeling: e.detail.value })
+  },
+
+  onCompletedDateInput(e) {
+    this.setData({ completedDate: e.detail.value })
+  },
+
+  onChooseImage() {
+    const remaining = 9 - this.data.images.length
+    if (remaining <= 0) {
+      wx.showToast({ title: '最多9张图片', icon: 'none' })
+      return
+    }
+    wx.chooseMedia({
+      count: remaining,
+      mediaType: ['image'],
+      sizeType: ['compressed'],
+      success: (res) => {
+        const newImages = res.tempFiles.map(f => f.tempFilePath)
+        this.setData({ images: [...this.data.images, ...newImages] })
+      }
+    })
+  },
+
+  onRemoveImage(e) {
+    const idx = e.currentTarget.dataset.index
+    const images = this.data.images.filter((_, i) => i !== idx)
+    this.setData({ images })
+  },
+
+  onPreviewCompleteImage(e) {
+    const url = e.currentTarget.dataset.url
+    if (!url) return
+    wx.previewImage({ current: url, urls: this.data.images })
+  },
+
+  async onCompleteSubmit() {
+    if (!this.data.feeling.trim()) {
+      wx.showToast({ title: '请写下这一刻的感受', icon: 'none' })
+      return
+    }
+
+    const item = this.data.currentTodo
+    wx.showLoading({ title: '提交中...' })
+
+    try {
+      // 上传图片
+      const uploadPromises = this.data.images.map((img, i) => {
+        const ext = img.split('.').pop() || 'jpg'
+        const cloudPath = `stories/${item._id}_${i}_${Date.now()}.${ext}`
+        return wx.cloud.uploadFile({ cloudPath, filePath: img })
+      })
+      const uploadResults = await Promise.all(uploadPromises)
+      const imageIds = uploadResults.map(r => r.fileID)
+
+      await db.collection('stories').doc(item._id).update({
+        data: {
+          status: 'completed',
+          feeling: this.data.feeling.trim(),
+          images: imageIds,
+          completedAt: this.data.completedDate || new Date().toISOString().slice(0, 10)
+        }
+      })
+
+      wx.hideLoading()
+      wx.showToast({ title: '这一刻已记录 🌸', icon: 'none' })
+      this.setData({ showCompleteModal: false, currentTodo: null })
+      getApp().globalData.storiesDirty = true
+      this.loadAllStoryDays()
+      if (this.data.selectedDate) this.loadDayDetails(this.data.selectedDate)
+    } catch (err) {
+      wx.hideLoading()
+      console.error('完成记录失败', err)
+      wx.showToast({ title: '操作失败', icon: 'none' })
+    }
   },
 
   // 添加愿望

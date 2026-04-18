@@ -35,7 +35,7 @@
 
     <!-- ===== 新建/编辑：可编辑 ===== -->
     <block wx:else>
-      <view class="modal-title">{{isAdd ? '✨ 添加新愿望' : '✏️ 编辑'}}</view>
+      <view class="modal-title">{{isAdd ? '✨ 添加新愿望' : '✏️ 修改愿望'}}</view>
       <view class="form-group">
         <text class="form-label">愿望 *</text>
         <textarea class="form-textarea title-textarea" placeholder="想和ta一起做什么呢~" value="{{title}}" bindinput="onTitleInput" maxlength="50" catchtap="preventBubble" />

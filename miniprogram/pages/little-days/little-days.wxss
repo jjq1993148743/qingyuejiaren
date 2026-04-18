@@ -419,3 +419,41 @@
   height: 72rpx;
   font-size: 26rpx;
 }
+
+.feeling-textarea {
+  min-height: 120rpx;
+}
+
+.date-picker {
+  color: var(--text-color);
+}
+
+.image-add {
+  width: 120rpx;
+  height: 120rpx;
+  border: 2rpx dashed var(--border-glow);
+  border-radius: 12rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.add-icon {
+  font-size: 52rpx;
+  color: var(--primary-light);
+}
+
+.image-remove {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 36rpx;
+  height: 36rpx;
+  background: rgba(255, 0, 0, 0.6);
+  color: #fff;
+  font-size: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0 12rpx 0 12rpx;
+}
