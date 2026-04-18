@@ -32,103 +32,171 @@
   transition: all 0.2s;
 }
 
-/* ===== 故事墙：三条竖线 ===== */
-.icon-bars {
+/* ===== 故事墙：翻开的书 ===== */
+.icon-book {
+  position: relative;
+  width: 36rpx;
+  height: 28rpx;
   display: flex;
-  align-items: flex-end;
-  gap: 6rpx;
-  height: 36rpx;
+  justify-content: center;
 }
 
-.icon-bars .bar {
-  width: 6rpx;
-  border-radius: 3rpx;
-  background: #D4B0C0;
+.book-left, .book-right {
+  width: 15rpx;
+  height: 26rpx;
+  border: 2rpx solid #D4B0C0;
+  border-radius: 3rpx 0 0 3rpx;
+  background: transparent;
   transition: all 0.2s;
 }
 
-.icon-bars .bar:nth-child(1) { height: 20rpx; }
-.icon-bars .bar:nth-child(2) { height: 32rpx; }
-.icon-bars .bar:nth-child(3) { height: 26rpx; }
+.book-right {
+  border-radius: 0 3rpx 3rpx 0;
+}
 
-.tab-item.active .icon-bars .bar {
+.book-spine {
+  position: absolute;
+  width: 2rpx;
+  height: 28rpx;
+  background: #D4B0C0;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  transition: all 0.2s;
+}
+
+.book-left {
+  transform: perspective(60rpx) rotateY(8deg);
+}
+
+.book-right {
+  transform: perspective(60rpx) rotateY(-8deg);
+}
+
+.tab-item.active .book-left,
+.tab-item.active .book-right {
+  border-color: #FFD0DC;
+  background: rgba(255, 208, 220, 0.15);
+}
+
+.tab-item.active .book-spine {
   background: #FFD0DC;
 }
 
-/* ===== 愿望清单：圆+勾 ===== */
-.icon-check-circle {
-  width: 36rpx;
-  height: 36rpx;
-  border: 3rpx solid #D4B0C0;
-  border-radius: 50%;
+/* ===== 愿望清单：许愿星 ===== */
+.icon-wish-star {
   position: relative;
+  width: 40rpx;
+  height: 40rpx;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.star-body {
+  width: 22rpx;
+  height: 22rpx;
+  background: #D4B0C0;
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
   transition: all 0.2s;
 }
 
-.check-mark {
-  width: 14rpx;
-  height: 8rpx;
-  border-left: 3rpx solid #D4B0C0;
-  border-bottom: 3rpx solid #D4B0C0;
-  transform: rotate(-45deg) translateY(-4rpx);
+.star-tail {
+  position: absolute;
+  width: 20rpx;
+  height: 2rpx;
+  background: linear-gradient(90deg, #D4B0C0, transparent);
+  bottom: 8rpx;
+  right: 4rpx;
+  transform: rotate(-30deg);
   transition: all 0.2s;
 }
 
-.tab-item.active .icon-check-circle {
-  border-color: #FFD0DC;
-  background: rgba(255, 208, 220, 0.2);
-  box-shadow: 0 0 16rpx rgba(255, 208, 220, 0.4);
+.tab-item.active .star-body {
+  background: #FFD0DC;
+  box-shadow: 0 0 12rpx rgba(255, 208, 220, 0.5);
 }
 
-.tab-item.active .check-mark {
-  border-color: #FFD0DC;
+.tab-item.active .star-tail {
+  background: linear-gradient(90deg, #FFD0DC, transparent);
 }
 
 /* ===== 小日子：日历 ===== */
 .icon-calendar {
-  width: 34rpx;
+  position: relative;
+  width: 36rpx;
   height: 34rpx;
-  border: 3rpx solid #D4B0C0;
-  border-radius: 6rpx;
-  padding: 6rpx 4rpx 4rpx;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4rpx;
+  justify-content: center;
+}
+
+.cal-body {
+  width: 34rpx;
+  height: 28rpx;
+  border: 2rpx solid #D4B0C0;
+  border-radius: 5rpx;
+  margin-top: 6rpx;
+  overflow: hidden;
   transition: all 0.2s;
 }
 
-.cal-header {
+.cal-header-bar {
   width: 100%;
-  height: 3rpx;
+  height: 6rpx;
   background: #D4B0C0;
-  border-radius: 2rpx;
+  transition: all 0.2s;
 }
 
 .cal-dots {
   display: flex;
-  gap: 6rpx;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 4rpx 4rpx 0;
+  gap: 5rpx;
 }
 
 .cal-dot {
-  width: 5rpx;
-  height: 5rpx;
+  width: 4rpx;
+  height: 4rpx;
   border-radius: 50%;
   background: #D4B0C0;
+  transition: all 0.2s;
 }
 
-.tab-item.active .icon-calendar {
+.cal-ring {
+  position: absolute;
+  width: 6rpx;
+  height: 8rpx;
+  border: 2rpx solid #D4B0C0;
+  border-bottom: none;
+  border-radius: 3rpx 3rpx 0 0;
+  top: 0;
+  transition: all 0.2s;
+}
+
+.cal-ring-left {
+  left: 6rpx;
+}
+
+.cal-ring-right {
+  right: 6rpx;
+}
+
+.tab-item.active .cal-body {
   border-color: #FFD0DC;
-  background: rgba(255, 208, 220, 0.2);
-  box-shadow: 0 0 16rpx rgba(255, 208, 220, 0.4);
+  background: rgba(255, 208, 220, 0.1);
 }
 
-.tab-item.active .cal-header,
+.tab-item.active .cal-header-bar {
+  background: #FFD0DC;
+}
+
 .tab-item.active .cal-dot {
   background: #FFD0DC;
+}
+
+.tab-item.active .cal-ring {
+  border-color: #FFD0DC;
 }
 
 /* ===== 文字 ===== */

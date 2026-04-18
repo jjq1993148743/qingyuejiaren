@@ -23,7 +23,6 @@
       <textarea class="form-textarea feeling-textarea" value="{{feeling}}" bindinput="onFeelingInput" maxlength="500" catchtap="preventBubble" />
     </view>
     <view class="form-group" wx:if="{{isCompleted && images.length > 0}}">
-      <text class="form-label">照片</text>
       <view class="image-grid">
         <view class="image-item" wx:for="{{images}}" wx:key="*this">
           <image src="{{item}}" mode="aspectFill" class="preview-img" catchtap="onPreviewImage" data-url="{{item}}"></image>

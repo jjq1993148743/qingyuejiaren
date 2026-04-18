@@ -18,8 +18,8 @@ const MILESTONES = [
 
 Page({
   data: {
-    currentYear: 2026,
-    currentMonth: 4,
+    currentYear: new Date().getFullYear(),
+    currentMonth: new Date().getMonth() + 1,
     weekDays: ['日', '一', '二', '三', '四', '五', '六'],
     calendarDays: [],
     selectedDate: null,
@@ -56,6 +56,12 @@ Page({
   },
 
   onShow() {
+    // 每次切回都刷新到当月
+    const now = new Date()
+    this.setData({
+      currentYear: now.getFullYear(),
+      currentMonth: now.getMonth() + 1
+    })
     if (getApp().globalData.storiesDirty) {
       this.loadAllStoryDays()
     }

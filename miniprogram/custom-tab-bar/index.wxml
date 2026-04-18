@@ -35,28 +35,36 @@
     bindtap="switchTab"
     data-index="{{index}}"
   >
-    <!-- 故事墙：竖线组 -->
+    <!-- 故事墙：翻开的书 -->
     <view class="icon-box" wx:if="{{index === 0}}">
-      <view class="icon-bars">
-        <view class="bar"></view>
-        <view class="bar"></view>
-        <view class="bar"></view>
+      <view class="icon-book">
+        <view class="book-left"></view>
+        <view class="book-spine"></view>
+        <view class="book-right"></view>
       </view>
     </view>
-    <!-- 愿望清单：圆+勾 -->
+    <!-- 愿望清单：许愿星 -->
     <view class="icon-box" wx:if="{{index === 1}}">
-      <view class="icon-check-circle">
-        <view class="check-mark"></view>
+      <view class="icon-wish-star">
+        <view class="star-body"></view>
+        <view class="star-tail"></view>
       </view>
     </view>
-    <!-- 小日子：日历格 -->
+    <!-- 小日子：日历 -->
     <view class="icon-box" wx:if="{{index === 2}}">
       <view class="icon-calendar">
-        <view class="cal-header"></view>
-        <view class="cal-dots">
-          <view class="cal-dot"></view>
-          <view class="cal-dot"></view>
-          <view class="cal-dot"></view>
+        <view class="cal-ring cal-ring-left"></view>
+        <view class="cal-ring cal-ring-right"></view>
+        <view class="cal-body">
+          <view class="cal-header-bar"></view>
+          <view class="cal-dots">
+            <view class="cal-dot"></view>
+            <view class="cal-dot"></view>
+            <view class="cal-dot"></view>
+            <view class="cal-dot"></view>
+            <view class="cal-dot"></view>
+            <view class="cal-dot"></view>
+          </view>
         </view>
       </view>
     </view>
