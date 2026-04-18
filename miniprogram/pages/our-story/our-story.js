@@ -18,9 +18,7 @@ Page({
     feeling: '',
     images: [],
     // 编辑表单
-    editingItem: null,
-    editDate: '',
-    editFeeling: ''
+    editingItem: null
   },
 
   onLoad() {

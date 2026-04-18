@@ -42,11 +42,11 @@ App({
               this.globalData.musicTempUrl = file.tempFileURL
               resolve(file.tempFileURL)
             } else {
-              console.error('获取音乐临时链接失败, status:', file.status, 'errMsg:', file.errMsg)
+              console.warn('音乐临时链接获取失败, status:', file.status)
               resolve('')
             }
           } else {
-            console.error('fileList为空', res)
+            console.warn('音乐临时链接返回fileList为空')
             resolve('')
           }
         },

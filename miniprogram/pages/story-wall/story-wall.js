@@ -47,8 +47,6 @@ Page({
   },
 
   onLoad() {
-    this.loadStories()
-    this.setData({ visibleHome: this.data.ourHome })
     this.calcDays()
     // 自动播放背景音乐
     if (!app.globalData.musicPlaying) {
@@ -126,7 +124,7 @@ Page({
         } catch (err) {
           console.error('获取图片链接失败', err)
           stories.forEach(s => {
-            s.tempImages = s.images || []
+            s.tempImages = []
           })
         }
       }
