@@ -144,8 +144,19 @@ Page({
 
   formatDate(timestamp) {
     if (!timestamp) return ''
+    let dateStr = ''
+    if (typeof timestamp === 'string' && timestamp.length >= 10) {
+      dateStr = timestamp.slice(0, 10)
+      const parts = dateStr.split('-')
+      if (parts.length === 3) {
+        return `${parseInt(parts[1])}月${parseInt(parts[2])}日`
+      }
+    }
     const d = new Date(timestamp)
-    return `${d.getMonth() + 1}月${d.getDate()}日`
+    if (!isNaN(d.getTime())) {
+      return `${d.getMonth() + 1}月${d.getDate()}日`
+    }
+    return dateStr
   },
 
   async onStoryTap(e) {
@@ -169,9 +180,15 @@ Page({
     const data = e.detail
     const updateData = {
       title: data.title,
-      description: data.description,
-      wishDate: data.wishDate,
-      feeling: data.feeling || ''
+      wishDate: data.wishDate
+    }
+
+    if (data.feeling !== undefined) {
+      updateData.feeling = data.feeling
+    }
+
+    if (data.completedAt !== undefined) {
+      updateData.completedAt = data.completedAt
     }
 
     try {

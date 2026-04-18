@@ -27,12 +27,24 @@ Component({
         let completedDate = ''
         if (val.status === 'completed') {
           if (val.completedAt) {
-            const d = new Date(val.completedAt)
-            const y = d.getFullYear()
-            const m = String(d.getMonth() + 1).padStart(2, '0')
-            const day = String(d.getDate()).padStart(2, '0')
-            completedDate = `${y}-${m}-${day}`
-          } else {
+            // completedAt可能是 "2026-04-18" 字符串或 Date 对象
+            const raw = val.completedAt
+            if (typeof raw === 'string' && raw.length >= 10) {
+              // 直接取前10位即 YYYY-MM-DD
+              completedDate = raw.slice(0, 10)
+            } else {
+              // Date对象或serverDate，用new Date解析
+              const d = new Date(raw)
+              if (!isNaN(d.getTime())) {
+                const y = d.getFullYear()
+                const m = String(d.getMonth() + 1).padStart(2, '0')
+                const day = String(d.getDate()).padStart(2, '0')
+                completedDate = `${y}-${m}-${day}`
+              }
+            }
+          }
+          // 如果解析失败，默认今天
+          if (!completedDate) {
             const now = new Date()
             const y = now.getFullYear()
             const m = String(now.getMonth() + 1).padStart(2, '0')
