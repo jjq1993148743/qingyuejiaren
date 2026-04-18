@@ -85,18 +85,14 @@
   <view class="modal-content glass-card" catchtap="preventBubble">
     <view class="modal-title">✨ 添加新愿望</view>
     <view class="form-group">
-      <text class="form-label">标题 *</text>
-      <input class="form-input" placeholder="想和ta一起做什么呢~" value="{{newTitle}}" bindinput="onTitleInput" catchtap="preventBubble" />
+      <text class="form-label">愿望 *</text>
+      <textarea class="form-textarea title-textarea" placeholder="想和ta一起做什么呢~" value="{{newTitle}}" bindinput="onTitleInput" maxlength="50" catchtap="preventBubble" />
     </view>
     <view class="form-group">
-      <text class="form-label">愿望时间 *</text>
+      <text class="form-label">期望时间 *</text>
       <picker mode="date" value="{{newDate}}" bindchange="onDateInput">
         <view class="form-input date-picker">{{newDate || '请选择日期'}}</view>
       </picker>
-    </view>
-    <view class="form-group">
-      <text class="form-label">描述</text>
-      <textarea class="form-textarea desc-textarea" placeholder="更多细节..." value="{{newDesc}}" bindinput="onDescInput" maxlength="200" catchtap="preventBubble" />
     </view>
     <view class="modal-actions">
       <view class="btn btn-ghost" bindtap="onAddClose">取消</view>

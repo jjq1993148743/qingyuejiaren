@@ -218,8 +218,8 @@
   box-sizing: border-box;
 }
 
-.desc-textarea {
-  min-height: 80rpx;
+.title-textarea {
+  height: 100rpx;
 }
 
 .feeling-textarea {

@@ -11,7 +11,6 @@ Page({
     showEditModal: false,
     // 新增表单
     newTitle: '',
-    newDesc: '',
     newDate: '',
     // 完成表单
     currentTodo: null,
@@ -73,7 +72,7 @@ Page({
   preventBubble() {},
 
   onAddTap() {
-    this.setData({ showAddModal: true, newTitle: '', newDesc: '', newDate: '' })
+    this.setData({ showAddModal: true, newTitle: '', newDate: '' })
   },
 
   onAddClose() {
@@ -84,17 +83,13 @@ Page({
     this.setData({ newTitle: e.detail.value })
   },
 
-  onDescInput(e) {
-    this.setData({ newDesc: e.detail.value })
-  },
-
   onDateInput(e) {
     this.setData({ newDate: e.detail.value })
   },
 
   async onAddSubmit() {
     if (!this.data.newTitle.trim()) {
-      wx.showToast({ title: '请输入标题', icon: 'none' })
+      wx.showToast({ title: '请输入愿望', icon: 'none' })
       return
     }
     if (!this.data.newDate) {
@@ -106,7 +101,7 @@ Page({
       await db.collection('stories').add({
         data: {
           title: this.data.newTitle.trim(),
-          description: this.data.newDesc.trim(),
+          description: '',
           wishDate: this.data.newDate,
           status: 'todo',
           feeling: '',
@@ -247,7 +242,6 @@ Page({
     const item = this.properties ? this.data.editingItem : this.data.editingItem
     const updateData = {
       title: data.title,
-      description: data.description,
       wishDate: data.wishDate
     }
 

@@ -15,7 +15,6 @@ Component({
     title: '',
     date: '',
     completedDate: '',
-    desc: '',
     feeling: '',
     images: [],
     isCompleted: false
@@ -45,7 +44,6 @@ Component({
           title: val.title || '',
           date: val.wishDate || '',
           completedDate: completedDate,
-          desc: val.description || '',
           feeling: val.feeling || '',
           images: val.tempImages || val._tempImages || [],
           isCompleted: val.status === 'completed' || val.type === 'completed'
@@ -60,7 +58,6 @@ Component({
     onTitleInput(e) { this.setData({ title: e.detail.value }) },
     onDateInput(e) { this.setData({ date: e.detail.value }) },
     onCompletedDateInput(e) { this.setData({ completedDate: e.detail.value }) },
-    onDescInput(e) { this.setData({ desc: e.detail.value }) },
     onFeelingInput(e) { this.setData({ feeling: e.detail.value }) },
 
     onPreviewImage(e) {
@@ -78,7 +75,7 @@ Component({
 
     onSubmit() {
       if (!this.data.title.trim()) {
-        wx.showToast({ title: '标题不能为空', icon: 'none' })
+        wx.showToast({ title: '愿望不能为空', icon: 'none' })
         return
       }
       if (!this.data.date) {
@@ -90,7 +87,6 @@ Component({
       const updateData = {
         _id: item._id,
         title: this.data.title.trim(),
-        description: this.data.desc.trim(),
         wishDate: this.data.date
       }
 

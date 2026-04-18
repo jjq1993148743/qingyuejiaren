@@ -64,8 +64,8 @@
   box-sizing: border-box;
 }
 
-.desc-textarea {
-  height: 160rpx;
+.title-textarea {
+  height: 100rpx;
 }
 
 .feeling-textarea {

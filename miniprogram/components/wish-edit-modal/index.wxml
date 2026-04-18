@@ -3,11 +3,11 @@
   <view class="modal-content glass-card" catchtap="preventBubble">
     <view class="modal-title">✏️ 编辑</view>
     <view class="form-group">
-      <text class="form-label">标题 *</text>
-      <input class="form-input" value="{{title}}" bindinput="onTitleInput" catchtap="preventBubble" disabled="{{isCompleted}}" />
+      <text class="form-label">愿望 *</text>
+      <textarea class="form-textarea title-textarea" value="{{title}}" bindinput="onTitleInput" maxlength="50" catchtap="preventBubble" disabled="{{isCompleted}}" />
     </view>
     <view class="form-group">
-      <text class="form-label">愿望时间 *</text>
+      <text class="form-label">期望时间 *</text>
       <picker mode="date" value="{{date}}" bindchange="onDateInput" disabled="{{isCompleted}}">
         <view class="form-input date-picker {{isCompleted ? 'disabled' : ''}}">{{date || '请选择日期'}}</view>
       </picker>
@@ -17,10 +17,6 @@
       <picker mode="date" value="{{completedDate}}" bindchange="onCompletedDateInput">
         <view class="form-input date-picker">{{completedDate || '请选择日期'}}</view>
       </picker>
-    </view>
-    <view class="form-group" wx:if="{{!isCompleted}}">
-      <text class="form-label">描述</text>
-      <textarea class="form-textarea desc-textarea" value="{{desc}}" bindinput="onDescInput" maxlength="200" catchtap="preventBubble" />
     </view>
     <view class="form-group" wx:if="{{isCompleted}}">
       <text class="form-label">感受</text>
