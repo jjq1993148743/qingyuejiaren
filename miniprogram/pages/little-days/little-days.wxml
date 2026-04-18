@@ -49,8 +49,10 @@
           <view class="detail-item-icon">
             <text wx:if="{{item.type === 'milestone'}}">✨</text>
             <text wx:elif="{{item.type === 'period'}}">🩹</text>
-            <text wx:elif="{{item.type === 'completed'}}">✅</text>
-            <text wx:elif="{{item.type === 'todo'}}">⬛</text>
+            <!-- 已完成：绿色圆圈勾号 -->
+            <view wx:elif="{{item.type === 'completed'}}" class="checkbox-checked">✓</view>
+            <!-- 未完成：空心圆圈 -->
+            <view wx:elif="{{item.type === 'todo'}}" class="checkbox"><view class="check-mark"></view></view>
           </view>
           <view class="detail-item-content">
             <text class="detail-item-title">{{item.title}}</text>
