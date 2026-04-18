@@ -8,6 +8,14 @@ Component({
     item: {
       type: Object,
       value: null
+    },
+    isAdd: {
+      type: Boolean,
+      value: false
+    },
+    defaultDate: {
+      type: String,
+      value: ''
     }
   },
 
@@ -21,19 +29,31 @@ Component({
   },
 
   observers: {
+    'visible'(val) {
+      // 新建模式：打开时初始化空表单
+      if (val && this.properties.isAdd) {
+        const now = new Date()
+        const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
+        this.setData({
+          title: '',
+          date: this.properties.defaultDate || today,
+          completedDate: '',
+          feeling: '',
+          images: [],
+          isCompleted: false
+        })
+      }
+    },
     'item'(val) {
       if (val) {
         // 完成时间：有completedAt就用，没有则默认今天
         let completedDate = ''
         if (val.status === 'completed') {
           if (val.completedAt) {
-            // completedAt可能是 "2026-04-18" 字符串或 Date 对象
             const raw = val.completedAt
             if (typeof raw === 'string' && raw.length >= 10) {
-              // 直接取前10位即 YYYY-MM-DD
               completedDate = raw.slice(0, 10)
             } else {
-              // Date对象或serverDate，用new Date解析
               const d = new Date(raw)
               if (!isNaN(d.getTime())) {
                 const y = d.getFullYear()
@@ -43,7 +63,6 @@ Component({
               }
             }
           }
-          // 如果解析失败，默认今天
           if (!completedDate) {
             const now = new Date()
             const y = now.getFullYear()
@@ -75,7 +94,6 @@ Component({
     onPreviewImage(e) {
       const url = e.currentTarget.dataset.url
       if (!url) return
-      // 过滤掉无效链接（cloud://等previewImage不支持的协议）
       const validUrls = this.data.images.filter(u => u && u.startsWith('http'))
       if (validUrls.length === 0) return
       wx.previewImage({ current: url.startsWith('http') ? url : validUrls[0], urls: validUrls })
@@ -95,6 +113,16 @@ Component({
         return
       }
 
+      // 新建模式
+      if (this.properties.isAdd) {
+        this.triggerEvent('add', {
+          title: this.data.title.trim(),
+          wishDate: this.data.date
+        })
+        return
+      }
+
+      // 编辑模式
       const item = this.properties.item
       const updateData = {
         _id: item._id,
@@ -104,7 +132,6 @@ Component({
 
       if (this.data.isCompleted) {
         updateData.feeling = this.data.feeling.trim()
-        // 只有真正有值才传 completedAt，空字符串不传
         if (this.data.completedDate) {
           updateData.completedAt = this.data.completedDate
         }

@@ -67,6 +67,9 @@
 
       <!-- 例假操作 -->
       <view class="detail-actions">
+        <view class="action-btn" bindtap="onAddWish">
+          <text>✨ 添加愿望</text>
+        </view>
         <view class="action-btn" bindtap="onMarkPeriod">
           <text>🩹 标记例假</text>
         </view>
@@ -139,7 +142,7 @@
   </view>
 </view>
 
-<!-- 编辑愿望弹窗 -->
-<wish-edit-modal visible="{{showEditModal}}" item="{{editingItem}}" bind:close="onEditClose" bind:submit="onEditSubmit" />
+<!-- 编辑/新建愿望弹窗 -->
+<wish-edit-modal visible="{{showEditModal}}" item="{{editingItem}}" isAdd="{{isAddMode}}" defaultDate="{{selectedDate}}" bind:close="onEditClose" bind:submit="onEditSubmit" bind:add="onAddSubmit" />
 
 

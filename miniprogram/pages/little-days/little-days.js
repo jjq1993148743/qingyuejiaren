@@ -40,6 +40,7 @@ Page({
     // 编辑弹窗
     showEditModal: false,
     editingItem: null,
+    isAddMode: false,
   },
 
   onLoad() {
@@ -198,7 +199,8 @@ Page({
 
     this.setData({
       showEditModal: true,
-      editingItem: { ...item, tempImages }
+      editingItem: { ...item, tempImages },
+      isAddMode: false
     })
   },
 
@@ -425,7 +427,41 @@ Page({
 
   // === 编辑弹窗 ===
   onEditClose() {
-    this.setData({ showEditModal: false, editingItem: null })
+    this.setData({ showEditModal: false, editingItem: null, isAddMode: false })
+  },
+
+  // 添加愿望
+  onAddWish() {
+    if (!this.data.selectedDate) {
+      wx.showToast({ title: '请先选择日期', icon: 'none' })
+      return
+    }
+    this.setData({ showEditModal: true, editingItem: null, isAddMode: true })
+  },
+
+  async onAddSubmit(e) {
+    const data = e.detail
+    try {
+      await db.collection('stories').add({
+        data: {
+          title: data.title,
+          description: '',
+          wishDate: data.wishDate,
+          status: 'todo',
+          feeling: '',
+          images: [],
+          createdAt: db.serverDate(),
+          completedAt: null
+        }
+      })
+      wx.showToast({ title: '愿望已添加 🌱', icon: 'none' })
+      this.setData({ showEditModal: false, isAddMode: false })
+      getApp().globalData.storiesDirty = true
+      this.loadAllStoryDays()
+      if (this.data.selectedDate) this.loadDayDetails(this.data.selectedDate)
+    } catch (err) {
+      wx.showToast({ title: '添加失败', icon: 'none' })
+    }
   },
 
   async onEditSubmit(e) {

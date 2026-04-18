@@ -3,7 +3,7 @@
   <view class="modal-content glass-card" catchtap="preventBubble">
 
     <!-- ===== 已完成：只读预览 ===== -->
-    <block wx:if="{{isCompleted}}">
+    <block wx:if="{{isCompleted && !isAdd}}">
       <view class="modal-title">🌸 愿望已实现</view>
       <view class="preview-group">
         <text class="preview-label">愿望</text>
@@ -33,12 +33,12 @@
       </view>
     </block>
 
-    <!-- ===== 未完成：可编辑 ===== -->
+    <!-- ===== 新建/编辑：可编辑 ===== -->
     <block wx:else>
-      <view class="modal-title">✏️ 编辑</view>
+      <view class="modal-title">{{isAdd ? '✨ 添加新愿望' : '✏️ 编辑'}}</view>
       <view class="form-group">
         <text class="form-label">愿望 *</text>
-        <textarea class="form-textarea title-textarea" value="{{title}}" bindinput="onTitleInput" maxlength="50" catchtap="preventBubble" />
+        <textarea class="form-textarea title-textarea" placeholder="想和ta一起做什么呢~" value="{{title}}" bindinput="onTitleInput" maxlength="50" catchtap="preventBubble" />
       </view>
       <view class="form-group">
         <text class="form-label">期望时间 *</text>
@@ -48,7 +48,7 @@
       </view>
       <view class="modal-actions">
         <view class="action-btn action-cancel" bindtap="onClose">取消</view>
-        <view class="action-btn action-save" bindtap="onSubmit">保存</view>
+        <view class="action-btn action-save" bindtap="onSubmit">{{isAdd ? '添加' : '保存'}}</view>
       </view>
     </block>
 
