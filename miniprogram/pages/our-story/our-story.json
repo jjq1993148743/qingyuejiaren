@@ -3,5 +3,6 @@
     "wish-edit-modal": "/components/wish-edit-modal/index"
   },
   "navigationStyle": "custom",
-  "navigationBarTitleText": "愿望清单"
+  "navigationBarTitleText": "愿望清单",
+  "backgroundColor": "#1A1232"
 }

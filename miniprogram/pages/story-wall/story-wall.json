@@ -3,5 +3,6 @@
     "wish-edit-modal": "/components/wish-edit-modal/index"
   },
   "navigationStyle": "custom",
-  "navigationBarTitleText": "故事墙"
+  "navigationBarTitleText": "故事墙",
+  "backgroundColor": "#1A1232"
 }

@@ -9,13 +9,14 @@
     "navigationBarBackgroundColor": "#1E1538",
     "navigationBarTitleText": "清悦佳人",
     "navigationBarTextStyle": "black",
-    "navigationStyle": "custom"
+    "navigationStyle": "custom",
+    "backgroundColor": "#1A1232"
   },
   "tabBar": {
     "custom": true,
     "color": "#D4B0C0",
     "selectedColor": "#FFD0DC",
-    "backgroundColor": "#FFFFFF",
+    "backgroundColor": "#1A1232",
     "borderStyle": "white",
     "list": [
       {

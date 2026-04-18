@@ -3,5 +3,6 @@
     "wish-edit-modal": "/components/wish-edit-modal/index"
   },
   "navigationStyle": "custom",
-  "navigationBarTitleText": "日历"
+  "navigationBarTitleText": "日历",
+  "backgroundColor": "#1A1232"
 }
