@@ -12,6 +12,7 @@ Page({
     // 新增表单
     newTitle: '',
     newDesc: '',
+    newDate: '',
     // 完成表单
     currentTodo: null,
     feeling: '',
@@ -71,7 +72,7 @@ Page({
   preventBubble() {},
 
   onAddTap() {
-    this.setData({ showAddModal: true, newTitle: '', newDesc: '' })
+    this.setData({ showAddModal: true, newTitle: '', newDesc: '', newDate: '' })
   },
 
   onAddClose() {
@@ -84,6 +85,10 @@ Page({
 
   onDescInput(e) {
     this.setData({ newDesc: e.detail.value })
+  },
+
+  onDateInput(e) {
+    this.setData({ newDate: e.detail.value })
   },
 
   async onAddSubmit() {
@@ -239,6 +244,10 @@ Page({
 
     if (data.feeling !== undefined) {
       updateData.feeling = data.feeling
+    }
+
+    if (data.completedAt !== undefined) {
+      updateData.completedAt = data.completedAt
     }
 
     try {

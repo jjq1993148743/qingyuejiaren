@@ -14,6 +14,7 @@ Component({
   data: {
     title: '',
     date: '',
+    completedDate: '',
     desc: '',
     feeling: '',
     images: [],
@@ -23,9 +24,27 @@ Component({
   observers: {
     'item'(val) {
       if (val) {
+        // 完成时间：有completedAt就用，没有则默认今天
+        let completedDate = ''
+        if (val.status === 'completed') {
+          if (val.completedAt) {
+            const d = new Date(val.completedAt)
+            const y = d.getFullYear()
+            const m = String(d.getMonth() + 1).padStart(2, '0')
+            const day = String(d.getDate()).padStart(2, '0')
+            completedDate = `${y}-${m}-${day}`
+          } else {
+            const now = new Date()
+            const y = now.getFullYear()
+            const m = String(now.getMonth() + 1).padStart(2, '0')
+            const day = String(now.getDate()).padStart(2, '0')
+            completedDate = `${y}-${m}-${day}`
+          }
+        }
         this.setData({
           title: val.title || '',
           date: val.wishDate || '',
+          completedDate: completedDate,
           desc: val.description || '',
           feeling: val.feeling || '',
           images: val.tempImages || val._tempImages || [],
@@ -40,6 +59,7 @@ Component({
 
     onTitleInput(e) { this.setData({ title: e.detail.value }) },
     onDateInput(e) { this.setData({ date: e.detail.value }) },
+    onCompletedDateInput(e) { this.setData({ completedDate: e.detail.value }) },
     onDescInput(e) { this.setData({ desc: e.detail.value }) },
     onFeelingInput(e) { this.setData({ feeling: e.detail.value }) },
 
@@ -76,6 +96,7 @@ Component({
 
       if (this.data.isCompleted) {
         updateData.feeling = this.data.feeling.trim()
+        updateData.completedAt = this.data.completedDate || ''
       }
 
       this.triggerEvent('submit', updateData)
