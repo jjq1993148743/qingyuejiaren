@@ -76,7 +76,52 @@
   color: var(--text-color);
 }
 
-.date-picker.disabled {
+/* ===== 只读预览模式 ===== */
+.preview-group {
+  margin-bottom: 20rpx;
+}
+
+.preview-label {
+  font-size: 22rpx;
+  color: var(--text-dim);
+  margin-bottom: 6rpx;
+  display: block;
+}
+
+.preview-text {
+  font-size: 28rpx;
+  color: var(--text-color);
+  display: block;
+  line-height: 1.6;
+}
+
+.preview-title {
+  font-size: 32rpx;
+  font-weight: 600;
+}
+
+.preview-feeling {
+  white-space: pre-wrap;
+  word-break: break-all;
+  background: rgba(155, 142, 196, 0.08);
+  border-radius: 16rpx;
+  padding: 16rpx;
+  font-style: italic;
+  color: var(--text-secondary);
+}
+
+.action-close-full {
+  background: rgba(155, 142, 196, 0.15);
+  border: 1rpx solid rgba(155, 142, 196, 0.3);
+  color: var(--text-secondary);
+}
+
+.action-close-full:active {
+  background: rgba(155, 142, 196, 0.25);
+  transform: scale(0.97);
+}
+
+/* ===== 编辑模式 ===== */
   opacity: 0.5;
   pointer-events: none;
 }

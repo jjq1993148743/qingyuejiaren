@@ -56,7 +56,7 @@
             <view class="done-check">
               <view class="checkbox-checked">✓</view>
             </view>
-            <view class="done-info" bindtap="onEditTap" data-item="{{item}}">
+            <view class="done-info" bindtap="onCompletedTap" data-item="{{item}}">
               <text class="done-title">{{item.title}}</text>
               <text class="done-date">{{item.dateStr}}</text>
               <text class="done-feeling" wx:if="{{item.feeling}}">"{{item.feeling.length > 40 ? item.feeling.slice(0,40)+'...' : item.feeling}}"</text>

@@ -179,17 +179,18 @@ Page({
     }
   },
 
-  // 点击详情项 → 弹出编辑
+  // 点击详情项 → 打开弹窗（已完成只读预览，未完成可编辑）
   async onDetailItemTap(e) {
     const item = e.currentTarget.dataset.item
     if (item.type === 'milestone' || item.type === 'period') return
 
     // 获取图片临时链接
-    let editImages = item.images || []
-    if (editImages.length > 0) {
+    let tempImages = []
+    const imgIds = item.images || []
+    if (imgIds.length > 0) {
       try {
-        const res = await wx.cloud.getTempFileURL({ fileList: editImages })
-        editImages = res.fileList.filter(f => f.status === 0 && f.tempFileURL).map(f => f.tempFileURL)
+        const res = await wx.cloud.getTempFileURL({ fileList: imgIds })
+        tempImages = res.fileList.filter(f => f.status === 0 && f.tempFileURL).map(f => f.tempFileURL)
       } catch (err) {
         console.error('获取图片链接失败', err)
       }
@@ -197,7 +198,7 @@ Page({
 
     this.setData({
       showEditModal: true,
-      editingItem: { ...item, tempImages: editImages }
+      editingItem: { ...item, tempImages }
     })
   },
 

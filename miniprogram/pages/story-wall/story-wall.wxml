@@ -155,7 +155,9 @@
   </view>
 </scroll-view>
 
-<!-- 编辑弹窗 -->
-<wish-edit-modal visible="{{showEditModal}}" item="{{editingItem}}" bind:close="onEditClose" bind:submit="onEditSubmit" />
+<!-- 预览弹窗 -->
+<wish-edit-modal visible="{{showEditModal}}" item="{{editingItem}}" bind:close="onEditClose" />
+
+
 
 

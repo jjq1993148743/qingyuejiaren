@@ -23,9 +23,6 @@ Page({
     stories: [],
     loading: true,
     emptyText: '快来完成第一个心愿吧~',
-    // 编辑弹窗
-    showEditModal: false,
-    editingItem: null,
     // 我们的家
     ourHome: [
       '是温暖的',
@@ -164,42 +161,15 @@ Page({
     const story = this.data.stories.find(s => s._id === id)
     if (!story) return
 
+    // 打开只读预览弹窗
     this.setData({
       showEditModal: true,
-      editingItem: story  // tempImages 已在 loadStories 中获取
+      editingItem: story
     })
   },
 
-  preventBubble() {},
-
   onEditClose() {
     this.setData({ showEditModal: false, editingItem: null })
-  },
-
-  async onEditSubmit(e) {
-    const data = e.detail
-    const updateData = {
-      title: data.title,
-      wishDate: data.wishDate
-    }
-
-    if (data.feeling !== undefined) {
-      updateData.feeling = data.feeling
-    }
-
-    if (data.completedAt !== undefined && data.completedAt !== '') {
-      updateData.completedAt = data.completedAt
-    }
-
-    try {
-      await db.collection('stories').doc(data._id).update({ data: updateData })
-      wx.showToast({ title: '已更新', icon: 'none' })
-      this.setData({ showEditModal: false, editingItem: null })
-      getApp().globalData.storiesDirty = true
-      this.loadStories()
-    } catch (err) {
-      wx.showToast({ title: '更新失败', icon: 'none' })
-    }
   },
 
   async onPreviewImage(e) {

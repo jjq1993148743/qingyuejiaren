@@ -1,37 +1,56 @@
 <!--components/wish-edit-modal/index.wxml-->
 <view class="modal-mask" wx:if="{{visible}}" bindtap="onClose">
   <view class="modal-content glass-card" catchtap="preventBubble">
-    <view class="modal-title">✏️ 编辑</view>
-    <view class="form-group">
-      <text class="form-label">愿望 *</text>
-      <textarea class="form-textarea title-textarea" value="{{title}}" bindinput="onTitleInput" maxlength="50" catchtap="preventBubble" disabled="{{isCompleted}}" />
-    </view>
-    <view class="form-group">
-      <text class="form-label">期望时间 *</text>
-      <picker mode="date" value="{{date}}" bindchange="onDateInput" disabled="{{isCompleted}}">
-        <view class="form-input date-picker {{isCompleted ? 'disabled' : ''}}">{{date || '请选择日期'}}</view>
-      </picker>
-    </view>
-    <view class="form-group" wx:if="{{isCompleted}}">
-      <text class="form-label">完成时间</text>
-      <picker mode="date" value="{{completedDate}}" bindchange="onCompletedDateInput">
-        <view class="form-input date-picker">{{completedDate || '请选择日期'}}</view>
-      </picker>
-    </view>
-    <view class="form-group" wx:if="{{isCompleted}}">
-      <text class="form-label">感受</text>
-      <textarea class="form-textarea feeling-textarea" value="{{feeling}}" bindinput="onFeelingInput" maxlength="500" catchtap="preventBubble" />
-    </view>
-    <view class="form-group" wx:if="{{isCompleted && images.length > 0}}">
-      <view class="image-grid">
-        <view class="image-item" wx:for="{{images}}" wx:key="*this">
-          <image src="{{item}}" mode="aspectFill" class="preview-img" catchtap="onPreviewImage" data-url="{{item}}"></image>
+
+    <!-- ===== 已完成：只读预览 ===== -->
+    <block wx:if="{{isCompleted}}">
+      <view class="modal-title">🌸 愿望已实现</view>
+      <view class="preview-group">
+        <text class="preview-label">愿望</text>
+        <text class="preview-text preview-title">{{title}}</text>
+      </view>
+      <view class="preview-group">
+        <text class="preview-label">期望时间</text>
+        <text class="preview-text">{{date || '未设置'}}</text>
+      </view>
+      <view class="preview-group" wx:if="{{completedDate}}">
+        <text class="preview-label">完成时间</text>
+        <text class="preview-text">{{completedDate}}</text>
+      </view>
+      <view class="preview-group" wx:if="{{feeling}}">
+        <text class="preview-label">感受</text>
+        <text class="preview-text preview-feeling">{{feeling}}</text>
+      </view>
+      <view class="preview-group" wx:if="{{images.length > 0}}">
+        <view class="image-grid">
+          <view class="image-item" wx:for="{{images}}" wx:key="*this">
+            <image src="{{item}}" mode="aspectFill" class="preview-img" catchtap="onPreviewImage" data-url="{{item}}"></image>
+          </view>
         </view>
       </view>
-    </view>
-    <view class="modal-actions">
-      <view class="action-btn action-cancel" bindtap="onClose">取消</view>
-      <view class="action-btn action-save" bindtap="onSubmit">保存</view>
-    </view>
+      <view class="modal-actions">
+        <view class="action-btn action-close-full" bindtap="onClose">关闭</view>
+      </view>
+    </block>
+
+    <!-- ===== 未完成：可编辑 ===== -->
+    <block wx:else>
+      <view class="modal-title">✏️ 编辑</view>
+      <view class="form-group">
+        <text class="form-label">愿望 *</text>
+        <textarea class="form-textarea title-textarea" value="{{title}}" bindinput="onTitleInput" maxlength="50" catchtap="preventBubble" />
+      </view>
+      <view class="form-group">
+        <text class="form-label">期望时间 *</text>
+        <picker mode="date" value="{{date}}" bindchange="onDateInput">
+          <view class="form-input date-picker">{{date || '请选择日期'}}</view>
+        </picker>
+      </view>
+      <view class="modal-actions">
+        <view class="action-btn action-cancel" bindtap="onClose">取消</view>
+        <view class="action-btn action-save" bindtap="onSubmit">保存</view>
+      </view>
+    </block>
+
   </view>
 </view>
