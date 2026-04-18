@@ -1,6 +1,6 @@
 {
   "usingComponents": {
-    "wish-edit-modal": "/components/wish-edit-modal/index"
+    "wish-edit-modal": "../../components/wish-edit-modal/index"
   },
   "navigationStyle": "custom",
   "navigationBarTitleText": "故事墙",
