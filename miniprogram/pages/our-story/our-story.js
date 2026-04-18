@@ -19,8 +19,6 @@ Page({
     images: [],
     // 编辑表单
     editingItem: null,
-    editTitle: '',
-    editDesc: '',
     editDate: '',
     editFeeling: ''
   },
@@ -63,8 +61,18 @@ Page({
 
   formatDate(timestamp) {
     if (!timestamp) return ''
+    // 安全解析：如果是字符串直接拆分，避免UTC偏差
+    if (typeof timestamp === 'string' && timestamp.length >= 10) {
+      const parts = timestamp.slice(0, 10).split('-')
+      if (parts.length === 3) {
+        return `${parseInt(parts[1])}月${parseInt(parts[2])}日`
+      }
+    }
     const d = new Date(timestamp)
-    return `${d.getMonth() + 1}月${d.getDate()}日`
+    if (!isNaN(d.getTime())) {
+      return `${d.getMonth() + 1}月${d.getDate()}日`
+    }
+    return ''
   },
 
   // === 新增心愿 ===
@@ -249,7 +257,7 @@ Page({
       updateData.feeling = data.feeling
     }
 
-    if (data.completedAt !== undefined) {
+    if (data.completedAt !== undefined && data.completedAt !== '') {
       updateData.completedAt = data.completedAt
     }
 

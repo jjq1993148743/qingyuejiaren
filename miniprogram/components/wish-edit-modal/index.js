@@ -104,7 +104,10 @@ Component({
 
       if (this.data.isCompleted) {
         updateData.feeling = this.data.feeling.trim()
-        updateData.completedAt = this.data.completedDate || ''
+        // 只有真正有值才传 completedAt，空字符串不传
+        if (this.data.completedDate) {
+          updateData.completedAt = this.data.completedDate
+        }
       }
 
       this.triggerEvent('submit', updateData)

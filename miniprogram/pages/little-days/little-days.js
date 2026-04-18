@@ -215,9 +215,17 @@ Page({
         if (s.wishDate) {
           completedDays[s.wishDate] = true
         } else if (s.completedAt) {
-          const d = new Date(s.completedAt)
-          const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
-          completedDays[key] = true
+          // 安全解析 completedAt
+          let key = ''
+          if (typeof s.completedAt === 'string' && s.completedAt.length >= 10) {
+            key = s.completedAt.slice(0, 10)
+          } else {
+            const d = new Date(s.completedAt)
+            if (!isNaN(d.getTime())) {
+              key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+            }
+          }
+          if (key) completedDays[key] = true
         }
       })
 
@@ -423,12 +431,17 @@ Page({
     const data = e.detail
     const updateData = {
       title: data.title,
-      description: data.description,
       wishDate: data.wishDate
     }
+
     if (data.feeling !== undefined) {
       updateData.feeling = data.feeling
     }
+
+    if (data.completedAt !== undefined && data.completedAt !== '') {
+      updateData.completedAt = data.completedAt
+    }
+
     try {
       await db.collection('stories').doc(data._id).update({ data: updateData })
       wx.showToast({ title: '已更新', icon: 'none' })

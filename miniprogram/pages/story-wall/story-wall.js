@@ -187,7 +187,7 @@ Page({
       updateData.feeling = data.feeling
     }
 
-    if (data.completedAt !== undefined) {
+    if (data.completedAt !== undefined && data.completedAt !== '') {
       updateData.completedAt = data.completedAt
     }
 
