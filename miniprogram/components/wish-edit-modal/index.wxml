@@ -4,12 +4,12 @@
     <view class="modal-title">✏️ 编辑</view>
     <view class="form-group">
       <text class="form-label">标题 *</text>
-      <input class="form-input" value="{{title}}" bindinput="onTitleInput" catchtap="preventBubble" />
+      <input class="form-input" value="{{title}}" bindinput="onTitleInput" catchtap="preventBubble" disabled="{{isCompleted}}" />
     </view>
     <view class="form-group">
       <text class="form-label">愿望时间 *</text>
-      <picker mode="date" value="{{date}}" bindchange="onDateInput">
-        <view class="form-input date-picker">{{date || '请选择日期'}}</view>
+      <picker mode="date" value="{{date}}" bindchange="onDateInput" disabled="{{isCompleted}}">
+        <view class="form-input date-picker {{isCompleted ? 'disabled' : ''}}">{{date || '请选择日期'}}</view>
       </picker>
     </view>
     <view class="form-group" wx:if="{{isCompleted}}">
@@ -18,7 +18,7 @@
         <view class="form-input date-picker">{{completedDate || '请选择日期'}}</view>
       </picker>
     </view>
-    <view class="form-group">
+    <view class="form-group" wx:if="{{!isCompleted}}">
       <text class="form-label">描述</text>
       <textarea class="form-textarea desc-textarea" value="{{desc}}" bindinput="onDescInput" maxlength="200" catchtap="preventBubble" auto-height />
     </view>

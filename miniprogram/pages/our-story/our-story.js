@@ -15,6 +15,7 @@ Page({
     newDate: '',
     // 完成表单
     currentTodo: null,
+    completedDate: '',
     feeling: '',
     images: [],
     // 编辑表单
@@ -127,9 +128,13 @@ Page({
   // === 标记完成 ===
   onCompleteTap(e) {
     const item = e.currentTarget.dataset.item
+    // 默认完成时间为今天
+    const now = new Date()
+    const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
     this.setData({
       showCompleteModal: true,
       currentTodo: item,
+      completedDate: today,
       feeling: '',
       images: []
     })
@@ -141,6 +146,10 @@ Page({
 
   onFeelingInput(e) {
     this.setData({ feeling: e.detail.value })
+  },
+
+  onCompletedDateInput(e) {
+    this.setData({ completedDate: e.detail.value })
   },
 
   onChooseImage() {
@@ -195,7 +204,7 @@ Page({
           status: 'completed',
           feeling: this.data.feeling.trim(),
           images: imageIds,
-          completedAt: db.serverDate()
+          completedAt: this.data.completedDate || new Date().toISOString().slice(0, 10)
         }
       })
 

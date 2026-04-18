@@ -76,6 +76,11 @@
   color: var(--text-color);
 }
 
+.date-picker.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
 .image-grid {
   display: flex;
   flex-wrap: wrap;

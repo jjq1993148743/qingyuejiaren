@@ -111,6 +111,12 @@
     <view class="modal-title">🌸 记录这一刻</view>
     <view class="modal-subtitle">{{currentTodo.title}}</view>
     <view class="form-group">
+      <text class="form-label">完成时间</text>
+      <picker mode="date" value="{{completedDate}}" bindchange="onCompletedDateInput">
+        <view class="form-input date-picker">{{completedDate || '请选择日期'}}</view>
+      </picker>
+    </view>
+    <view class="form-group">
       <text class="form-label">这一刻的感受 *</text>
       <textarea class="form-textarea feeling-textarea" placeholder="写下你的感受吧..." value="{{feeling}}" bindinput="onFeelingInput" maxlength="500" catchtap="preventBubble" auto-height />
     </view>
