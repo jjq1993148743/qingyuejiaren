@@ -24,7 +24,7 @@ Page({
   },
 
   onLoad() {
-    this.loadData()
+    // loadData 由 onShow 统一调用
   },
 
   onShow() {
@@ -222,26 +222,8 @@ Page({
     }
   },
 
-  // === 编辑（仅未完成愿望） ===
-  async onEditTap(e) {
-    const item = e.currentTarget.dataset.item
-    let tempImages = []
-    if (item.images && item.images.length > 0) {
-      try {
-        const res = await wx.cloud.getTempFileURL({ fileList: item.images })
-        tempImages = res.fileList.filter(f => f.status === 0 && f.tempFileURL).map(f => f.tempFileURL)
-      } catch (err) {
-        console.error('获取图片链接失败', err)
-      }
-    }
-    this.setData({
-      showEditModal: true,
-      editingItem: { ...item, tempImages }
-    })
-  },
-
-  // === 预览已完成愿望 ===
-  async onCompletedTap(e) {
+  // === 打开编辑/预览弹窗 ===
+  async openEditModal(e) {
     const item = e.currentTarget.dataset.item
     let tempImages = []
     if (item.images && item.images.length > 0) {
@@ -264,7 +246,7 @@ Page({
 
   async onEditSubmit(e) {
     const data = e.detail
-    const item = this.properties ? this.data.editingItem : this.data.editingItem
+    const item = this.data.editingItem
     const updateData = {
       title: data.title,
       wishDate: data.wishDate

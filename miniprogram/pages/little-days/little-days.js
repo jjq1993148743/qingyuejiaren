@@ -79,8 +79,9 @@ Page({
   },
 
   // === 日历生成 ===
-  generateCalendar() {
-    const { currentYear, currentMonth } = this.data
+  // 构建日历天数据（纯函数，不调 setData）
+  _buildCalendarDays() {
+    const { currentYear, currentMonth, completedDays, todoDays, periodDays, milestoneDays } = this.data
     const firstDay = new Date(currentYear, currentMonth - 1, 1)
     const lastDay = new Date(currentYear, currentMonth, 0)
     const startWeekday = firstDay.getDay()
@@ -92,10 +93,10 @@ Page({
     }
     for (let d = 1; d <= totalDays; d++) {
       const dateStr = `${currentYear}-${String(currentMonth).padStart(2, '0')}-${String(d).padStart(2, '0')}`
-      const isCompleted = !!this.data.completedDays[dateStr]
-      const isTodo = !!this.data.todoDays[dateStr]
-      const isPeriod = !!this.data.periodDays[dateStr]
-      const isMilestone = !!this.data.milestoneDays[dateStr]
+      const isCompleted = !!completedDays[dateStr]
+      const isTodo = !!todoDays[dateStr]
+      const isPeriod = !!periodDays[dateStr]
+      const isMilestone = !!milestoneDays[dateStr]
       const isToday = this.isToday(currentYear, currentMonth, d)
 
       days.push({
@@ -108,7 +109,11 @@ Page({
         isToday
       })
     }
-    this.setData({ calendarDays: days })
+    return days
+  },
+
+  generateCalendar() {
+    this.setData({ calendarDays: this._buildCalendarDays() })
   },
 
   isToday(y, m, d) {
@@ -245,8 +250,11 @@ Page({
         }
       })
 
-      this.setData({ completedDays, todoDays })
-      this.generateCalendar()
+      this.setData({
+        completedDays,
+        todoDays,
+        calendarDays: this._buildCalendarDays()
+      })
     } catch (err) {
       console.error('加载愿望标记日失败', err)
     }
@@ -311,8 +319,10 @@ Page({
           periodDays[key] = r._id
         }
       })
-      this.setData({ periodDays })
-      this.generateCalendar()
+      this.setData({
+        periodDays,
+        calendarDays: this._buildCalendarDays()
+      })
     } catch (err) {
       console.error('加载例假记录失败', err)
     }

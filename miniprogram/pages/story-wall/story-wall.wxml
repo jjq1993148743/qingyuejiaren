@@ -85,11 +85,11 @@
         <view class="bubble-content bubble-home">
           <view class="home-title">我们的家，</view>
           <view class="home-list">
-            <view wx:for="{{visibleHome}}" wx:key="index" class="home-item" id="home-{{index}}">
+            <view wx:for="{{ourHome}}" wx:key="index" class="home-item">
               <text>⬛️ {{item}}</text>
             </view>
           </view>
-          <view class="home-final" wx:if="{{visibleHome.length === ourHome.length}}">
+          <view class="home-final">
             <text>最后，我们的家，是我们两个人的，至于爱情的结晶？他得排在我媳妇儿后边，谁也不行！</text>
           </view>
         </view>

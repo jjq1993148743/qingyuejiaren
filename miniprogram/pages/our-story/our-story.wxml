@@ -22,7 +22,7 @@
                 <view class="check-mark"></view>
               </view>
             </view>
-            <view class="todo-info" bindtap="onEditTap" data-item="{{item}}">
+            <view class="todo-info" bindtap="openEditModal" data-item="{{item}}">
               <text class="todo-title">{{item.title}}</text>
               <text class="todo-date" wx:if="{{item.wishDate}}">📅 {{item.wishDate}}</text>
               <text class="todo-desc" wx:if="{{item.description}}">{{item.description}}</text>
@@ -56,7 +56,7 @@
             <view class="done-check">
               <view class="checkbox-checked">✓</view>
             </view>
-            <view class="done-info" bindtap="onCompletedTap" data-item="{{item}}">
+            <view class="done-info" bindtap="openEditModal" data-item="{{item}}">
               <text class="done-title">{{item.title}}</text>
               <text class="done-date">{{item.dateStr}}</text>
               <text class="done-feeling" wx:if="{{item.feeling}}">"{{item.feeling.length > 40 ? item.feeling.slice(0,40)+'...' : item.feeling}}"</text>

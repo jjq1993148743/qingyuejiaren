@@ -4,18 +4,18 @@ const app = getApp()
 
 // 里程碑配置
 const MILESTONES = [
-  { days: 1, label: '初心', icon: '💕', reached: false },
-  { days: 7, label: '一周之约', icon: '🌱', reached: false },
-  { days: 20, label: '二十日情', icon: '🎀', reached: false },
-  { days: 30, label: '一月相伴', icon: '🌸', reached: false },
-  { days: 60, label: '两月相知', icon: '🌺', reached: false },
-  { days: 100, label: '百日情深', icon: '💯', reached: false },
-  { days: 200, label: '两百夜思念', icon: '🌙', reached: false },
-  { days: 365, label: '一年长情', icon: '🎊', reached: false },
-  { days: 520, label: '我爱你', icon: '💗', reached: false },
-  { days: 730, label: '两周年', icon: '🌹', reached: false },
-  { days: 1000, label: '千日之恋', icon: '✨', reached: false },
-  { days: 1314, label: '一生一世', icon: '💍', reached: false }
+  { days: 1, label: '初心', icon: '💕' },
+  { days: 7, label: '一周之约', icon: '🌱' },
+  { days: 20, label: '二十日情', icon: '🎀' },
+  { days: 30, label: '一月相伴', icon: '🌸' },
+  { days: 60, label: '两月相知', icon: '🌺' },
+  { days: 100, label: '百日情深', icon: '💯' },
+  { days: 200, label: '两百夜思念', icon: '🌙' },
+  { days: 365, label: '一年长情', icon: '🎊' },
+  { days: 520, label: '我爱你', icon: '💗' },
+  { days: 730, label: '两周年', icon: '🌹' },
+  { days: 1000, label: '千日之恋', icon: '✨' },
+  { days: 1314, label: '一生一世', icon: '💍' }
 ]
 
 Page({
@@ -40,7 +40,6 @@ Page({
       '是在柴米油盐中能够开出浪漫花朵的',
       '是能在别人所谓的"七年之痒"中仍有激情与情调的'
     ],
-    visibleHome: [],
     // 在一起天数 + 里程碑
     days: 0,
     milestones: [],

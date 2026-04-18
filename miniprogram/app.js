@@ -33,16 +33,13 @@ App({
         return
       }
 
-      console.log('正在获取音乐临时链接...', this.globalData.musicCloudId)
       wx.cloud.getTempFileURL({
         fileList: [this.globalData.musicCloudId],
         success: (res) => {
-          console.log('getTempFileURL 返回:', JSON.stringify(res))
           if (res.fileList && res.fileList.length > 0) {
             const file = res.fileList[0]
             if (file.status === 0 && file.tempFileURL) {
               this.globalData.musicTempUrl = file.tempFileURL
-              console.log('音乐临时链接获取成功:', file.tempFileURL)
               resolve(file.tempFileURL)
             } else {
               console.error('获取音乐临时链接失败, status:', file.status, 'errMsg:', file.errMsg)
@@ -81,12 +78,10 @@ App({
         ctx.loop = true
         ctx.volume = 0.6
         ctx.onPlay(() => {
-          console.log('音乐开始播放')
           this.globalData.musicPlaying = true
           this._notifyMusicState()
         })
         ctx.onPause(() => {
-          console.log('音乐暂停')
           this.globalData.musicPlaying = false
           this._notifyMusicState()
         })
