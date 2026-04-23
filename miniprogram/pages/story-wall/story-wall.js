@@ -86,48 +86,17 @@ Page({
 
   async loadStories() {
     try {
-      const res = await db.collection('stories')
-        .where({ status: 'completed' })
-        .orderBy('wishDate', 'desc')
-        .get()
+      const res = await wx.cloud.callFunction({
+        name: 'getStories',
+        data: { action: 'queryStoriesDesc', status: 'completed', limit: 100 }
+      })
 
-      const stories = res.data.map(s => ({
+      const stories = (res.result.data || []).map(s => ({
         ...s,
         dateStr: this.formatDate(s.completedAt),
         previewText: s.feeling ? s.feeling.slice(0, 30) + (s.feeling.length > 30 ? '...' : '') : '',
-        tempImages: []
+        tempImages: s.tempImages || []
       }))
-
-      // 批量获取图片临时链接
-      const allFileIds = []
-      stories.forEach(s => {
-        if (s.images && s.images.length > 0) {
-          allFileIds.push(...s.images)
-        }
-      })
-
-      if (allFileIds.length > 0) {
-        try {
-          const urlRes = await wx.cloud.getTempFileURL({ fileList: allFileIds })
-          const urlMap = {}
-          urlRes.fileList.forEach(f => {
-            // 只保留获取成功的临时链接，过滤掉cloud://回退（previewImage不支持）
-            if (f.status === 0 && f.tempFileURL) {
-              urlMap[f.fileID] = f.tempFileURL
-            }
-          })
-          stories.forEach(s => {
-            if (s.images && s.images.length > 0) {
-              s.tempImages = s.images.map(id => urlMap[id]).filter(Boolean)
-            }
-          })
-        } catch (err) {
-          console.error('获取图片链接失败', err)
-          stories.forEach(s => {
-            s.tempImages = []
-          })
-        }
-      }
 
       this.setData({ stories, loading: false })
     } catch (err) {

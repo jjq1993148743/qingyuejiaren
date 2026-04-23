@@ -36,13 +36,13 @@ Page({
   async loadData() {
     try {
       const [todoRes, doneRes] = await Promise.all([
-        db.collection('stories').where({ status: 'todo' }).orderBy('wishDate', 'asc').get(),
-        db.collection('stories').where({ status: 'completed' }).orderBy('completedAt', 'desc').get()
+        wx.cloud.callFunction({ name: 'getStories', data: { action: 'queryStories', status: 'todo', limit: 100 } }),
+        wx.cloud.callFunction({ name: 'getStories', data: { action: 'queryStoriesDesc', status: 'completed', limit: 100 } })
       ])
 
       this.setData({
-        todos: todoRes.data,
-        completed: doneRes.data.map(s => ({
+        todos: todoRes.result.data || [],
+        completed: (doneRes.result.data || []).map(s => ({
           ...s,
           dateStr: this.formatDate(s.completedAt),
           imageCount: s.images ? s.images.length : 0
@@ -223,11 +223,18 @@ Page({
   // === 打开编辑/预览弹窗 ===
   async openEditModal(e) {
     const item = e.currentTarget.dataset.item
-    let tempImages = []
-    if (item.images && item.images.length > 0) {
+    let tempImages = item.tempImages || []
+    // 如果还没有临时链接，用云函数获取
+    if (tempImages.length === 0 && item.images && item.images.length > 0) {
       try {
-        const res = await wx.cloud.getTempFileURL({ fileList: item.images })
-        tempImages = res.fileList.filter(f => f.status === 0 && f.tempFileURL).map(f => f.tempFileURL)
+        const res = await wx.cloud.callFunction({
+          name: 'getStories',
+          data: { action: 'queryStories', status: item.status, wishDate: item.wishDate, limit: 100 }
+        })
+        const found = (res.result.data || []).find(s => s._id === item._id)
+        if (found && found.tempImages) {
+          tempImages = found.tempImages
+        }
       } catch (err) {
         console.error('获取图片链接失败', err)
       }

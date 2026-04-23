@@ -196,13 +196,18 @@ Page({
     const item = e.currentTarget.dataset.item
     if (item.type === 'milestone' || item.type === 'period') return
 
-    // 获取图片临时链接
-    let tempImages = []
-    const imgIds = item.images || []
-    if (imgIds.length > 0) {
+    // 优先用已有的 tempImages，否则通过云函数获取
+    let tempImages = item.tempImages || []
+    if (tempImages.length === 0 && item.images && item.images.length > 0) {
       try {
-        const res = await wx.cloud.getTempFileURL({ fileList: imgIds })
-        tempImages = res.fileList.filter(f => f.status === 0 && f.tempFileURL).map(f => f.tempFileURL)
+        const res = await wx.cloud.callFunction({
+          name: 'getStories',
+          data: { action: 'queryStories', status: item.status, wishDate: item.wishDate, limit: 100 }
+        })
+        const found = (res.result.data || []).find(s => s._id === item._id)
+        if (found && found.tempImages) {
+          tempImages = found.tempImages
+        }
       } catch (err) {
         console.error('获取图片链接失败', err)
       }
@@ -219,12 +224,12 @@ Page({
   async loadAllStoryDays() {
     try {
       const [completedRes, todoRes] = await Promise.all([
-        db.collection('stories').where({ status: 'completed' }).field({ completedAt: true, wishDate: true }).get(),
-        db.collection('stories').where({ status: 'todo' }).field({ wishDate: true }).get()
+        wx.cloud.callFunction({ name: 'getStories', data: { action: 'queryStories', status: 'completed', limit: 100, field: { completedAt: true, wishDate: true } } }),
+        wx.cloud.callFunction({ name: 'getStories', data: { action: 'queryStories', status: 'todo', limit: 100, field: { wishDate: true } } })
       ])
 
       const completedDays = {}
-      completedRes.data.forEach(s => {
+      ;(completedRes.result.data || []).forEach(s => {
         // 用 wishDate 标记在日历上
         if (s.wishDate) {
           completedDays[s.wishDate] = true
@@ -244,7 +249,7 @@ Page({
       })
 
       const todoDays = {}
-      todoRes.data.forEach(s => {
+      ;(todoRes.result.data || []).forEach(s => {
         if (s.wishDate) {
           todoDays[s.wishDate] = true
         }
