@@ -17,9 +17,11 @@ exports.main = async (event, context) => {
     let queryRef = db.collection('stories').where(query)
     
     if (action === 'queryStoriesDesc') {
+      // 已完成：按完成时间倒序（新在上），同天内按秒级精确排序
       queryRef = queryRef.orderBy('completedAt', 'desc')
     } else {
-      queryRef = queryRef.orderBy('wishDate', 'asc')
+      // 未完成：按创建时间倒序（最新添加在上），精确到秒
+      queryRef = queryRef.orderBy('createdAt', 'desc')
     }
 
     queryRef = queryRef.skip(pageNum * pageSize).limit(pageSize)

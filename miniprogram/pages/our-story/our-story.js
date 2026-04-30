@@ -205,7 +205,7 @@ Page({
           status: 'completed',
           feeling: this.data.feeling.trim(),
           images: imageIds,
-          completedAt: this.data.completedDate || new Date().toISOString().slice(0, 10)
+          completedAt: new Date().toISOString()
         }
       })
 

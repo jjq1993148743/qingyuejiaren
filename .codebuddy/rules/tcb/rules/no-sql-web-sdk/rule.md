@@ -41,12 +41,29 @@ Keep local `references/...` paths for files that ship with the current skill dir
 - SQL / MySQL database operations.
 - Pure resource-permission administration with no browser SDK code.
 
+### SDK Code vs MCP Tools
+
+**When to write SDK code (use this skill):**
+- The task explicitly asks to "modify code" or "use SDK"
+- The task asks to implement app/frontend logic
+- The task mentions specific SDK methods like `db.collection().add()`, `.get()`, `.update()`
+- The context shows an existing Web project with SDK initialization (e.g., `index.js` already has `cloudbase.init()`)
+
+**When to use MCP tools instead:**
+- The task asks to manage CloudBase resources (create collection, set permissions, etc.)
+- The task involves admin/management operations without writing app code
+- The task mentions tools like `writeNoSqlDatabaseContent`, `managePermissions`, etc.
+
+**Key distinction:** If the user says "使用 JS SDK 执行 XX 操作" (use JS SDK to perform XX operation) or "修改代码" (modify code), write SDK code in the project files. Do not use MCP database write tools for app-level data operations.
+
 ### Common mistakes / gotchas
 
 - Querying before the user is signed in when the collection rules require identity.
 - Using `wx.cloud.database()` or Node SDK patterns in browser code.
 - Initializing CloudBase lazily with dynamic imports instead of a shared synchronous app instance.
 - Treating security rules as result filters rather than request validators.
+- **Expecting a `CUSTOM` security rule to take effect immediately after you call `managePermissions(updateResourcePermission)`.** The backend caches rule evaluators for **2–5 minutes**; first writes after a rule change may silently fail or be rejected with `DATABASE_PERMISSION_DENIED` even when the expression is correct. Either (a) wait a few minutes and retry the same write before assuming the rule is wrong, or (b) verify the rule is live by reading `result.code` / `result.message` on every write and by doing a `get()` round-trip on the just-written `_id`; do not treat a resolved promise as success. See `security-rules.md` → "Propagation And Verification" for the full pattern.
+- Misreading the return shape of `db.collection(...).add(...)`. In the CloudBase Web SDK, the created document ID is exposed at top-level `result._id`, not `result.id`, `result.data.id`, or `result.insertedId`.
 - For CMS-style collections that need **app-level admin users** to edit/delete all records while editors can only edit/delete their own records, do not oversimplify the rule to `READONLY`. A validated pattern is a `CUSTOM` rule that reads role from `user_roles` by `auth.uid` and combines it with `doc.authorId == auth.uid`, while frontend writes can stay on `.doc(id).update()` / `.doc(id).remove()`.
 - Forgetting pagination or indexes for larger collections.
 
@@ -119,6 +136,10 @@ Important rules:
    - Database errors must become readable UI or application errors, not silent failures.
    - For writes, do not treat a resolved promise as success by default. Check write result fields such as `updated` / `deleted` or surfaced `code` / `message`.
 
+5. **Persist IDs from create operations correctly**
+   - For Web SDK `.add(...)`, the newly created document ID is `result._id`.
+   - Do not look for the ID under `result.id`, `result.data`, or other driver-specific fields.
+
 ## Quick examples
 
 ### Simple query
@@ -127,6 +148,18 @@ Important rules:
 const result = await db.collection("todos")
   .where({ completed: false })
   .get();
+```
+
+### Create and capture document ID
+
+```javascript
+const result = await db.collection("posts").add({
+  title: "New article",
+  content: "...",
+  createdAt: new Date()
+});
+
+const articleId = result._id;
 ```
 
 ### Ordered pagination
