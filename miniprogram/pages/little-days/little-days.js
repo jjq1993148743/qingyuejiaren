@@ -555,7 +555,8 @@ Page({
       this.loadAllStoryDays()
       if (this.data.selectedDate) this.loadDayDetails(this.data.selectedDate)
     } catch (err) {
-      wx.showToast({ title: '更新失败', icon: 'none' })
+      console.error('更新失败详情:', err)
+      wx.showToast({ title: err.errMsg || '更新失败', icon: 'none' })
     }
   }
 })
