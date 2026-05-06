@@ -39,7 +39,7 @@ Component({
         this.setData({
           title: '',
           date: this.properties.defaultDate || today,
-          completedDate: today,
+          completedDate: '',
           feeling: '',
           images: [],
           originFileIds: [],
@@ -50,6 +50,9 @@ Component({
     },
     'item'(val) {
       if (val) {
+        const now = new Date()
+        const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
+
         let completedDate = ''
         if (val.completedAt) {
           const raw = val.completedAt
@@ -76,7 +79,7 @@ Component({
 
         this.setData({
           title: val.title || '',
-          date: val.wishDate || '',
+          date: val.wishDate || today,
           completedDate: completedDate,
           feeling: val.feeling || '',
           images: displayImages,
@@ -153,10 +156,6 @@ Component({
     async onSubmit() {
       if (!this.data.title.trim()) {
         wx.showToast({ title: '写点啥吧~', icon: 'none' })
-        return
-      }
-      if (!this.data.date) {
-        wx.showToast({ title: '请选择日期', icon: 'none' })
         return
       }
 

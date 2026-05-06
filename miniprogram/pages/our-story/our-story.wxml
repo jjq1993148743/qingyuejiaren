@@ -66,7 +66,7 @@
               </view>
             </view>
             <view class="done-revert" catchtap="onRevertTap" data-item="{{item}}">
-              <text class="revert-icon">↩️</text>
+              <text class="revert-text">↺</text>
             </view>
           </view>
         </view>

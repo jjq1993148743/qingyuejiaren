@@ -5,7 +5,7 @@
 
     <view class="modal-title">✨ 记录这一刻</view>
 
-    <!-- 愿望标题 -->
+    <!-- 一起做点什么 -->
     <view class="form-group">
       <text class="form-label">一起做点什么~</text>
       <textarea class="form-textarea title-textarea" placeholder="一起做点什么~" value="{{title}}" bindinput="onTitleInput" maxlength="50" catchtap="preventBubble" auto-height />
@@ -13,7 +13,7 @@
 
     <!-- 期待 -->
     <view class="form-group">
-      <text class="form-label">期待 *</text>
+      <text class="form-label">期待</text>
       <picker mode="date" value="{{date}}" bindchange="onDateInput">
         <view class="form-input date-picker">{{date || '请选择日期'}}</view>
       </picker>
@@ -23,7 +23,7 @@
     <view class="form-group">
       <text class="form-label">达成</text>
       <picker mode="date" value="{{completedDate}}" bindchange="onCompletedDateInput">
-        <view class="form-input date-picker">{{completedDate || (isAdd ? '今天' : '请选择日期')}}</view>
+        <view class="form-input date-picker">{{completedDate || '请选择日期'}}</view>
       </picker>
     </view>
 
