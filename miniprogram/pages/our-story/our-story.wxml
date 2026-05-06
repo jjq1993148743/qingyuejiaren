@@ -1,4 +1,5 @@
 <!--pages/our-story/our-story.wxml-->
+<wxs src="fmt.wxs" module="fmt" />
 <view class="nav-placeholder"></view>
 
 <scroll-view scroll-y class="page-scroll">
@@ -58,8 +59,8 @@
             </view>
             <view class="done-info" bindtap="openEditModal" data-item="{{item}}">
               <text class="done-title">{{item.title}}</text>
-              <text class="done-date">{{item.dateStr}}</text>
-              <text class="done-feeling" wx:if="{{item.feeling}}">"{{item.feeling.length > 40 ? item.feeling.slice(0,40)+'...' : item.feeling}}"</text>
+              <text class="done-date" wx:if="{{item.dateStr}}">📅 {{item.dateStr}}</text>
+              <text class="done-feeling" wx:if="{{fmt.hasVal(item.feeling)}}">"{{fmt.safeStr(item.feeling)}}"</text>
               <view class="done-images" wx:if="{{item.imageCount > 0}}">
                 <text class="img-count">📷 {{item.imageCount}}</text>
               </view>
@@ -80,61 +81,7 @@
   <text class="fab-icon">+</text>
 </view>
 
-<!-- 新增心愿弹窗 -->
-<view class="modal-mask" wx:if="{{showAddModal}}" bindtap="onAddClose">
-  <view class="modal-content glass-card" catchtap="preventBubble">
-    <view class="modal-title">✨ 添加新愿望</view>
-    <view class="form-group">
-      <text class="form-label">愿望 *</text>
-      <textarea class="form-textarea title-textarea" placeholder="想和ta一起做什么呢~" value="{{newTitle}}" bindinput="onTitleInput" maxlength="50" catchtap="preventBubble" />
-    </view>
-    <view class="form-group">
-      <text class="form-label">期望时间 *</text>
-      <picker mode="date" value="{{newDate}}" bindchange="onDateInput">
-        <view class="form-input date-picker">{{newDate || '请选择日期'}}</view>
-      </picker>
-    </view>
-    <view class="modal-actions">
-      <view class="btn btn-ghost" bindtap="onAddClose">取消</view>
-      <view class="btn btn-primary" bindtap="onAddSubmit">添加</view>
-    </view>
-  </view>
-</view>
-
-<!-- 记录这一刻弹窗 -->
-<view class="modal-mask" wx:if="{{showCompleteModal}}" bindtap="onCompleteClose">
-  <view class="modal-content glass-card" catchtap="preventBubble">
-    <view class="modal-title">🌸 完成愿望</view>
-    <view class="modal-subtitle">{{currentTodo.title}}</view>
-    <view class="form-group">
-      <text class="form-label">完成时间</text>
-      <picker mode="date" value="{{completedDate}}" bindchange="onCompletedDateInput">
-        <view class="form-input date-picker">{{completedDate || '请选择日期'}}</view>
-      </picker>
-    </view>
-    <view class="form-group">
-      <text class="form-label">这一刻的感受 *</text>
-      <textarea class="form-textarea feeling-textarea" placeholder="写下你的感受吧..." value="{{feeling}}" bindinput="onFeelingInput" maxlength="500" catchtap="preventBubble" auto-height />
-    </view>
-    <view class="form-group">
-      <view class="image-grid">
-        <view class="image-item" wx:for="{{images}}" wx:key="*this">
-          <image src="{{item}}" mode="aspectFill" class="preview-img" bindtap="onPreviewImage" data-url="{{item}}"></image>
-          <view class="image-remove" catchtap="onRemoveImage" data-index="{{index}}">×</view>
-        </view>
-        <view class="image-add" wx:if="{{images.length < 9}}" bindtap="onChooseImage">
-          <text class="add-icon">+</text>
-        </view>
-      </view>
-    </view>
-    <view class="modal-actions">
-      <view class="btn btn-ghost" bindtap="onCompleteClose">取消</view>
-      <view class="btn btn-primary" bindtap="onCompleteSubmit">完成 ✨</view>
-    </view>
-  </view>
-</view>
-
-<!-- 编辑弹窗 -->
-<wish-edit-modal visible="{{showEditModal}}" item="{{editingItem}}" bind:close="onEditClose" bind:submit="onEditSubmit" />
+<!-- 编辑/新建弹窗（统一组件） -->
+<wish-edit-modal visible="{{showEditModal}}" item="{{editingItem}}" isAdd="{{isAddMode}}" bind:close="onEditClose" bind:submit="onEditSubmit" bind:add="onAddSubmit" />
 
 

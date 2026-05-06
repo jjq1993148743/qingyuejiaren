@@ -91,12 +91,48 @@ Page({
         data: { action: 'queryStoriesDesc', status: 'completed', limit: 100 }
       })
 
-      const stories = (res.result.data || []).map(s => ({
-        ...s,
-        dateStr: this.formatDate(s.completedAt),
-        previewText: s.feeling ? s.feeling.slice(0, 30) + (s.feeling.length > 30 ? '...' : '') : '',
-        tempImages: s.tempImages || []
-      }))
+      const raw = res.result.data || []
+
+      // 收集所有 cloud:// fileID，分批转换为临时链接
+      const cloudIds = []
+      raw.forEach(s => {
+        const imgs = s.tempImages || []
+        imgs.forEach(url => {
+          if (url && url.startsWith('cloud://')) cloudIds.push(url)
+        })
+      })
+
+      const urlMap = {}
+      if (cloudIds.length > 0) {
+        const BATCH = 49
+        for (let i = 0; i < cloudIds.length; i += BATCH) {
+          try {
+            const urlRes = await wx.cloud.getTempFileURL({ fileList: cloudIds.slice(i, i + BATCH) })
+            urlRes.fileList.forEach(f => {
+              if (f.tempFileURL) urlMap[f.fileID] = f.tempFileURL
+            })
+          } catch (e) {
+            console.error('getTempFileURL batch failed', e)
+          }
+        }
+      }
+
+      const stories = raw.map(s => {
+        // 清理无效 feeling
+        let f = s.feeling
+        if (f === null || f === undefined || typeof f !== 'string' ||
+            f.trim() === '' || f.trim() === 'undefined') {
+          f = ''
+        } else {
+          f = f.trim()
+        }
+        return {
+          ...s,
+          dateStr: this.formatDate(s.completedAt),
+          previewText: f ? f.slice(0, 30) + (f.length > 30 ? '...' : '') : '',
+          tempImages: (s.tempImages || []).map(url => (url && url.startsWith('cloud://') ? (urlMap[url] || '') : url)).filter(Boolean)
+        }
+      })
 
       this.setData({ stories, loading: false })
     } catch (err) {
@@ -136,6 +172,42 @@ Page({
 
   onEditClose() {
     this.setData({ showEditModal: false, editingItem: null })
+  },
+
+  async onEditSubmit(e) {
+    const data = e.detail
+    const updateData = {
+      title: data.title,
+      wishDate: data.wishDate
+    }
+
+    if (data.feeling !== undefined && data.feeling !== '') {
+      updateData.feeling = data.feeling
+    }
+
+    if (data.completedAt !== undefined && data.completedAt !== '') {
+      updateData.completedAt = data.completedAt
+    }
+
+    if (data.images !== undefined) {
+      updateData.images = data.images
+    }
+
+    // 删除被移除的图片
+    if (data.removedImages && data.removedImages.length > 0) {
+      await Promise.all(data.removedImages.map(fileId =>
+        wx.cloud.deleteFile({ fileList: [fileId] }).catch(() => {})
+      ))
+    }
+
+    try {
+      await db.collection('stories').doc(data._id).update({ data: updateData })
+      wx.showToast({ title: '已更新', icon: 'none' })
+      this.setData({ showEditModal: false, editingItem: null })
+      this.loadStories()
+    } catch (err) {
+      wx.showToast({ title: '更新失败', icon: 'none' })
+    }
   },
 
   async onPreviewImage(e) {

@@ -116,7 +116,7 @@
         <!-- 时间节点 -->
         <view class="timeline-node">
           <view class="node-dot"></view>
-          <text class="node-date">{{item.dateStr}}</text>
+          <text class="node-date" wx:if="{{item.dateStr}}">{{item.dateStr}}</text>
         </view>
         <!-- 内容卡片 -->
         <view class="timeline-content" bindtap="onStoryTap" data-id="{{item._id}}">
@@ -138,7 +138,7 @@
   </view>
 
 <!-- 预览弹窗 -->
-<wish-edit-modal visible="{{showEditModal}}" item="{{editingItem}}" bind:close="onEditClose" />
+<wish-edit-modal visible="{{showEditModal}}" item="{{editingItem}}" bind:close="onEditClose" bind:submit="onEditSubmit" />
 
 
 

@@ -1,0 +1,27 @@
+var trimStr = function(s) {
+  // WXS 不支持正则，手动 trim
+  var start = 0
+  var end = s.length - 1
+  while (start <= end && (s[start] === ' ' || s[start] === '\t' || s[start] === '\n' || s[start] === '\r')) {
+    start++
+  }
+  while (end >= start && (s[end] === ' ' || s[end] === '\t' || s[end] === '\n' || s[end] === '\r')) {
+    end--
+  }
+  return start > end ? '' : s.substring(start, end + 1)
+}
+
+var safeStr = function(val) {
+  if (val === null || val === undefined || val === '' || typeof val !== 'string') return ''
+  var trimmed = trimStr(val)
+  if (trimmed === 'undefined' || trimmed === '') return ''
+  return trimmed.length > 40 ? trimmed.slice(0, 40) + '...' : trimmed
+}
+
+var hasVal = function(val) {
+  if (typeof val !== 'string') return false
+  var trimmed = trimStr(val)
+  return trimmed.length > 0 && trimmed !== 'undefined'
+}
+
+module.exports = { safeStr: safeStr, hasVal: hasVal }

@@ -25,59 +25,64 @@ Component({
     completedDate: '',
     feeling: '',
     images: [],
-    isCompleted: false
+    originFileIds: [],
+    removedFileIds: [],
+    newImages: [],
+    submitting: false
   },
 
   observers: {
     'visible'(val) {
-      // 新建模式：打开时初始化空表单
       if (val && this.properties.isAdd) {
         const now = new Date()
         const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
         this.setData({
           title: '',
           date: this.properties.defaultDate || today,
-          completedDate: '',
+          completedDate: today,
           feeling: '',
           images: [],
-          isCompleted: false
+          originFileIds: [],
+          removedFileIds: [],
+          newImages: []
         })
       }
     },
     'item'(val) {
       if (val) {
-        // 完成时间：有completedAt就用，没有则默认今天
         let completedDate = ''
-        if (val.status === 'completed') {
-          if (val.completedAt) {
-            const raw = val.completedAt
-            if (typeof raw === 'string' && raw.length >= 10) {
-              completedDate = raw.slice(0, 10)
-            } else {
-              const d = new Date(raw)
-              if (!isNaN(d.getTime())) {
-                const y = d.getFullYear()
-                const m = String(d.getMonth() + 1).padStart(2, '0')
-                const day = String(d.getDate()).padStart(2, '0')
-                completedDate = `${y}-${m}-${day}`
-              }
+        if (val.completedAt) {
+          const raw = val.completedAt
+          if (typeof raw === 'string' && raw.length >= 10) {
+            completedDate = raw.slice(0, 10)
+          } else {
+            const d = new Date(raw)
+            if (!isNaN(d.getTime())) {
+              const y = d.getFullYear()
+              const m = String(d.getMonth() + 1).padStart(2, '0')
+              const day = String(d.getDate()).padStart(2, '0')
+              completedDate = `${y}-${m}-${day}`
             }
           }
-          if (!completedDate) {
-            const now = new Date()
-            const y = now.getFullYear()
-            const m = String(now.getMonth() + 1).padStart(2, '0')
-            const day = String(now.getDate()).padStart(2, '0')
-            completedDate = `${y}-${m}-${day}`
-          }
         }
+
+        // 图片：展示URL + 原始 cloudID
+        const displayImages = val.tempImages || val._tempImages || []
+        const cloudFileIds = val.images || []
+        const originFileIds = displayImages.map((url, i) => {
+          if (cloudFileIds[i]) return cloudFileIds[i]
+          return null
+        })
+
         this.setData({
           title: val.title || '',
           date: val.wishDate || '',
           completedDate: completedDate,
           feeling: val.feeling || '',
-          images: val.tempImages || val._tempImages || [],
-          isCompleted: val.status === 'completed' || val.type === 'completed'
+          images: displayImages,
+          originFileIds: originFileIds,
+          removedFileIds: [],
+          newImages: []
         })
       }
     }
@@ -93,19 +98,61 @@ Component({
 
     onPreviewImage(e) {
       const url = e.currentTarget.dataset.url
+      const urls = e.currentTarget.dataset.urls || this.data.images
       if (!url) return
-      const validUrls = this.data.images.filter(u => u && u.startsWith('http'))
+      const validUrls = urls.filter(u => u && (u.startsWith('http') || u.startsWith('wxfile')))
       if (validUrls.length === 0) return
-      wx.previewImage({ current: url.startsWith('http') ? url : validUrls[0], urls: validUrls })
+      wx.previewImage({ current: url, urls: validUrls })
+    },
+
+    onChooseImage() {
+      const remaining = 9 - this.data.images.length
+      if (remaining <= 0) {
+        wx.showToast({ title: '最多9张图片', icon: 'none' })
+        return
+      }
+      wx.chooseMedia({
+        count: remaining,
+        mediaType: ['image'],
+        sizeType: ['compressed'],
+        success: (res) => {
+          const newPaths = res.tempFiles.map(f => f.tempFilePath)
+          this.setData({
+            images: [...this.data.images, ...newPaths],
+            originFileIds: [...this.data.originFileIds, ...newPaths.map(() => null)],
+            newImages: [...this.data.newImages, ...newPaths]
+          })
+        }
+      })
+    },
+
+    onRemoveImage(e) {
+      const idx = e.currentTarget.dataset.index
+      const originFileId = this.data.originFileIds[idx]
+      const removedFileIds = [...this.data.removedFileIds]
+      if (originFileId) {
+        removedFileIds.push(originFileId)
+      }
+      this.setData({
+        images: this.data.images.filter((_, i) => i !== idx),
+        originFileIds: this.data.originFileIds.filter((_, i) => i !== idx),
+        removedFileIds,
+        newImages: this.data.newImages.filter(img => {
+          return this.data.images[idx] !== img
+        })
+      })
+      const keptNew = this.data.newImages.filter(img => this.data.images.includes(img))
+      this.setData({ newImages: keptNew })
     },
 
     onClose() {
+      if (this.data.submitting) return
       this.triggerEvent('close')
     },
 
-    onSubmit() {
+    async onSubmit() {
       if (!this.data.title.trim()) {
-        wx.showToast({ title: '愿望不能为空', icon: 'none' })
+        wx.showToast({ title: '写点啥吧~', icon: 'none' })
         return
       }
       if (!this.data.date) {
@@ -115,29 +162,81 @@ Component({
 
       // 新建模式
       if (this.properties.isAdd) {
-        this.triggerEvent('add', {
-          title: this.data.title.trim(),
-          wishDate: this.data.date
-        })
+        this.setData({ submitting: true })
+        try {
+          // 上传图片
+          let imageIds = []
+          if (this.data.newImages.length > 0) {
+            const uploadPromises = this.data.newImages.map((img, i) => {
+              const ext = img.split('.').pop() || 'jpg'
+              const cloudPath = `stories/new_${Date.now()}_${i}.${ext}`
+              return wx.cloud.uploadFile({ cloudPath, filePath: img })
+            })
+            const results = await Promise.all(uploadPromises)
+            imageIds = results.map(r => r.fileID)
+          }
+
+          this.setData({ submitting: false })
+
+          // 判断是否已完成（有完成时间或感受或图片）
+          const hasCompletedData = this.data.completedDate || this.data.feeling.trim() || imageIds.length > 0
+
+          this.triggerEvent('add', {
+            title: this.data.title.trim(),
+            wishDate: this.data.date,
+            completedAt: hasCompletedData ? (this.data.completedDate || this.data.date) : undefined,
+            feeling: this.data.feeling.trim() || undefined,
+            images: imageIds.length > 0 ? imageIds : undefined
+          })
+        } catch (err) {
+          console.error('保存失败', err)
+          this.setData({ submitting: false })
+          wx.showToast({ title: '保存失败', icon: 'none' })
+        }
         return
       }
 
-      // 编辑模式
-      const item = this.properties.item
-      const updateData = {
-        _id: item._id,
-        title: this.data.title.trim(),
-        wishDate: this.data.date
-      }
+      // 编辑模式 - 统一处理
+      this.setData({ submitting: true })
 
-      if (this.data.isCompleted) {
-        updateData.feeling = this.data.feeling.trim()
-        if (this.data.completedDate) {
-          updateData.completedAt = this.data.completedDate
+      try {
+        const item = this.properties.item
+        const updateData = {
+          _id: item._id,
+          title: this.data.title.trim(),
+          wishDate: this.data.date,
+          feeling: this.data.feeling.trim() || undefined,
+          completedAt: this.data.completedDate || undefined
         }
-      }
 
-      this.triggerEvent('submit', updateData)
+        // 删除被移除的云存储图片
+        if (this.data.removedFileIds.length > 0) {
+          await wx.cloud.deleteFile({ fileList: this.data.removedFileIds }).catch(() => {})
+        }
+
+        // 上传新图片
+        let newFileIds = []
+        if (this.data.newImages.length > 0) {
+          const uploadPromises = this.data.newImages.map((img, i) => {
+            const ext = img.split('.').pop() || 'jpg'
+            const cloudPath = `stories/${item._id}_new_${i}_${Date.now()}.${ext}`
+            return wx.cloud.uploadFile({ cloudPath, filePath: img })
+          })
+          const uploadResults = await Promise.all(uploadPromises)
+          newFileIds = uploadResults.map(r => r.fileID)
+        }
+
+        // 合并图片：保留的原始 cloudID + 新上传的 cloudID
+        const keptFileIds = this.data.originFileIds.filter(id => id !== null)
+        updateData.images = [...keptFileIds, ...newFileIds]
+
+        this.setData({ submitting: false })
+        this.triggerEvent('submit', updateData)
+      } catch (err) {
+        console.error('保存失败', err)
+        this.setData({ submitting: false })
+        wx.showToast({ title: '保存失败', icon: 'none' })
+      }
     }
   }
 })

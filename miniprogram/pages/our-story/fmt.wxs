@@ -1,0 +1,10 @@
+var safeStr = function(val) {
+  if (val === null || val === undefined || val === '' || typeof val !== 'string') return ''
+  return val.length > 40 ? val.slice(0, 40) + '...' : val
+}
+
+var hasVal = function(val) {
+  return typeof val === 'string' && val.length > 0
+}
+
+module.exports = { safeStr: safeStr, hasVal: hasVal }

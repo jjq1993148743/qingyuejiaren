@@ -41,12 +41,6 @@ Page({
     showEditModal: false,
     editingItem: null,
     isAddMode: false,
-    // 完成愿望弹窗
-    showCompleteModal: false,
-    currentTodo: null,
-    completedDate: '',
-    feeling: '',
-    images: [],
   },
 
   onLoad() {
@@ -177,7 +171,18 @@ Page({
 
       // 已完成愿望
       completedRes.data.forEach(s => {
-        dayDetails.push({ type: 'completed', ...s })
+        const item = { type: 'completed', ...s }
+        // 清理无效的 feeling 值（多层防御）
+        const f = item.feeling
+        if (f === null || f === undefined || typeof f !== 'string' ||
+            f.trim() === '' || f.trim() === 'undefined' || f.toLowerCase().trim() === 'undefined' ||
+            /^[\s\uFEFF\xA0]*$/.test(f)) {
+          delete item.feeling
+        } else {
+          // 去除首尾空白
+          item.feeling = f.trim()
+        }
+        dayDetails.push(item)
       })
 
       // 未完成愿望
@@ -191,7 +196,7 @@ Page({
     }
   },
 
-  // 点击详情项 → 打开弹窗（已完成只读预览，未完成可编辑）
+  // 点击详情项 → 打开弹窗（可编辑）
   async onDetailItemTap(e) {
     const item = e.currentTarget.dataset.item
     if (item.type === 'milestone' || item.type === 'period') return
@@ -211,6 +216,24 @@ Page({
       } catch (err) {
         console.error('获取图片链接失败', err)
       }
+    }
+
+    // 客户端转换 cloud:// 为 https 临时链接（分批）
+    const cloudIds = tempImages.filter(u => u && u.startsWith('cloud://'))
+    if (cloudIds.length > 0) {
+      const BATCH = 49
+      const urlMap = {}
+      for (let i = 0; i < cloudIds.length; i += BATCH) {
+        try {
+          const urlRes = await wx.cloud.getTempFileURL({ fileList: cloudIds.slice(i, i + BATCH) })
+          urlRes.fileList.forEach(f => {
+            if (f.tempFileURL) urlMap[f.fileID] = f.tempFileURL
+          })
+        } catch (e) {
+          console.error('getTempFileURL batch failed', e)
+        }
+      }
+      tempImages = tempImages.map(u => (u && u.startsWith('cloud://') ? (urlMap[u] || '') : u)).filter(Boolean)
     }
 
     this.setData({
@@ -453,102 +476,11 @@ Page({
     this.setData({ showEditModal: false, editingItem: null, isAddMode: false })
   },
 
-  // === 完成愿望 ===
+  // 点击未完成项的对号 → 打开编辑弹窗（可直接完成）
   onCompleteFromDay(e) {
     const item = e.currentTarget.dataset.item
-    if (item.type !== 'todo') return // 只有未完成才能点对号完成
-
-    const now = new Date()
-    const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
-    this.setData({
-      showCompleteModal: true,
-      currentTodo: item,
-      completedDate: today,
-      feeling: '',
-      images: []
-    })
-  },
-
-  onCompleteClose() {
-    this.setData({ showCompleteModal: false, currentTodo: null })
-  },
-
-  onFeelingInput(e) {
-    this.setData({ feeling: e.detail.value })
-  },
-
-  onCompletedDateInput(e) {
-    this.setData({ completedDate: e.detail.value })
-  },
-
-  onChooseImage() {
-    const remaining = 9 - this.data.images.length
-    if (remaining <= 0) {
-      wx.showToast({ title: '最多9张图片', icon: 'none' })
-      return
-    }
-    wx.chooseMedia({
-      count: remaining,
-      mediaType: ['image'],
-      sizeType: ['compressed'],
-      success: (res) => {
-        const newImages = res.tempFiles.map(f => f.tempFilePath)
-        this.setData({ images: [...this.data.images, ...newImages] })
-      }
-    })
-  },
-
-  onRemoveImage(e) {
-    const idx = e.currentTarget.dataset.index
-    const images = this.data.images.filter((_, i) => i !== idx)
-    this.setData({ images })
-  },
-
-  onPreviewCompleteImage(e) {
-    const url = e.currentTarget.dataset.url
-    if (!url) return
-    wx.previewImage({ current: url, urls: this.data.images })
-  },
-
-  async onCompleteSubmit() {
-    if (!this.data.feeling.trim()) {
-      wx.showToast({ title: '请写下这一刻的感受', icon: 'none' })
-      return
-    }
-
-    const item = this.data.currentTodo
-    wx.showLoading({ title: '提交中...' })
-
-    try {
-      // 上传图片
-      const uploadPromises = this.data.images.map((img, i) => {
-        const ext = img.split('.').pop() || 'jpg'
-        const cloudPath = `stories/${item._id}_${i}_${Date.now()}.${ext}`
-        return wx.cloud.uploadFile({ cloudPath, filePath: img })
-      })
-      const uploadResults = await Promise.all(uploadPromises)
-      const imageIds = uploadResults.map(r => r.fileID)
-
-      await db.collection('stories').doc(item._id).update({
-        data: {
-          status: 'completed',
-          feeling: this.data.feeling.trim(),
-          images: imageIds,
-          completedAt: this.data.completedDate || new Date().toISOString().slice(0, 10)
-        }
-      })
-
-      wx.hideLoading()
-      wx.showToast({ title: '这一刻已记录 🌸', icon: 'none' })
-      this.setData({ showCompleteModal: false, currentTodo: null })
-      getApp().globalData.storiesDirty = true
-      this.loadAllStoryDays()
-      if (this.data.selectedDate) this.loadDayDetails(this.data.selectedDate)
-    } catch (err) {
-      wx.hideLoading()
-      console.error('完成记录失败', err)
-      wx.showToast({ title: '操作失败', icon: 'none' })
-    }
+    if (item.type !== 'todo') return
+    this.onDetailItemTap({ currentTarget: { dataset: { item } } })
   },
 
   // 添加愿望
@@ -563,19 +495,20 @@ Page({
   async onAddSubmit(e) {
     const data = e.detail
     try {
+      const hasCompletedData = data.completedAt || data.feeling || (data.images && data.images.length > 0)
       await db.collection('stories').add({
         data: {
           title: data.title,
           description: '',
           wishDate: data.wishDate,
-          status: 'todo',
-          feeling: '',
-          images: [],
+          status: hasCompletedData ? 'completed' : 'todo',
+          feeling: data.feeling || '',
+          images: data.images || [],
           createdAt: db.serverDate(),
-          completedAt: null
+          completedAt: data.completedAt || null
         }
       })
-      wx.showToast({ title: '愿望已添加 🌱', icon: 'none' })
+      wx.showToast({ title: '已记录', icon: 'none' })
       this.setData({ showEditModal: false, isAddMode: false })
       getApp().globalData.storiesDirty = true
       this.loadAllStoryDays()
@@ -592,15 +525,29 @@ Page({
       wishDate: data.wishDate
     }
 
-    if (data.feeling !== undefined) {
+    // 有完成数据 → 状态改为 completed
+    if (data.completedAt || (data.feeling && data.feeling.trim())) {
+      updateData.status = 'completed'
+    }
+    if (data.completedAt) {
+      updateData.completedAt = data.completedAt
+    }
+    if (data.feeling !== undefined && data.feeling !== '') {
       updateData.feeling = data.feeling
     }
 
-    if (data.completedAt !== undefined && data.completedAt !== '') {
-      updateData.completedAt = data.completedAt
+    if (data.images !== undefined) {
+      updateData.images = data.images
     }
 
     try {
+      // 删除被移除的图片
+      if (data.removedImages && data.removedImages.length > 0) {
+        await Promise.all(data.removedImages.map(fileId =>
+          wx.cloud.deleteFile({ fileList: [fileId] }).catch(() => {})
+        ))
+      }
+
       await db.collection('stories').doc(data._id).update({ data: updateData })
       wx.showToast({ title: '已更新', icon: 'none' })
       this.setData({ showEditModal: false, editingItem: null })

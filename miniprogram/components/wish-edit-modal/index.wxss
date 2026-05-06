@@ -65,11 +65,11 @@
 }
 
 .title-textarea {
-  height: 100rpx;
+  min-height: 72rpx;
 }
 
 .feeling-textarea {
-  height: 160rpx;
+  height: 130rpx;
 }
 
 .date-picker {
@@ -138,11 +138,48 @@
   height: 120rpx;
   border-radius: 12rpx;
   overflow: hidden;
+  position: relative;
 }
 
 .preview-img {
   width: 100%;
   height: 100%;
+}
+
+.image-remove {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 36rpx;
+  height: 36rpx;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  font-size: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0 12rpx 0 8rpx;
+  line-height: 1;
+}
+
+.image-add {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 12rpx;
+  border: 2rpx dashed rgba(155, 142, 196, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(155, 142, 196, 0.06);
+}
+
+.image-add:active {
+  background: rgba(155, 142, 196, 0.15);
+}
+
+.add-icon {
+  font-size: 48rpx;
+  color: var(--text-dim);
 }
 
 .modal-actions {

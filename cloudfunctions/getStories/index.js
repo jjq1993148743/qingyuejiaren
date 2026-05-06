@@ -45,16 +45,20 @@ exports.main = async (event, context) => {
 
     const urlMap = {}
     if (allFileIds.length > 0) {
-      try {
-        const urlRes = await cloud.getTempFileURL({ fileList: allFileIds })
-        console.log('getTempFileURL result:', JSON.stringify(urlRes.fileList.map(f => ({ fileID: f.fileID, status: f.status, tempFileURL: f.tempFileURL }))))
-        urlRes.fileList.forEach(f => {
-          if (f.status === 0 && f.tempFileURL) {
-            urlMap[f.fileID] = f.tempFileURL
-          }
-        })
-      } catch (urlErr) {
-        console.error('getTempFileURL failed:', urlErr)
+      // 分批获取，每批最多49个（API限制50）
+      const BATCH = 49
+      for (let i = 0; i < allFileIds.length; i += BATCH) {
+        const batch = allFileIds.slice(i, i + BATCH)
+        try {
+          const urlRes = await cloud.getTempFileURL({ fileList: batch })
+          urlRes.fileList.forEach(f => {
+            if (f.status === 0 && f.tempFileURL) {
+              urlMap[f.fileID] = f.tempFileURL
+            }
+          })
+        } catch (urlErr) {
+          console.error('getTempFileURL batch failed:', urlErr)
+        }
       }
     }
 
@@ -62,7 +66,7 @@ exports.main = async (event, context) => {
 
     res.data.forEach(s => {
       if (s.images && s.images.length > 0) {
-        s.tempImages = s.images.map(id => urlMap[id] || '').filter(Boolean)
+        s.tempImages = s.images.map(id => urlMap[id] || id).filter(Boolean)
       }
     })
 
